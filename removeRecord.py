@@ -1,8 +1,8 @@
 def remove_record(students:dict[int, dict[str, str or float]]):
-    students.pop(get_inputs(students))
+    students.pop(get_id(students))
 
 
-def get_inputs(students:dict[int, dict[str, str or float]]) -> int:
+def get_id(students:dict[int, dict[str, str or float]]) -> int:
     while True:  # ask for id
         id = input("ID: ")
         try:
