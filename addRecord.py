@@ -50,7 +50,7 @@ def add_record(students) -> bool:
 
     if record_info:
         student_id, name, gpa = record_info
-        students[student_id] = {'name': name, 'gpa': gpa}
+        students[int(student_id)] = {'name': name, 'gpa': float(gpa)}
 
     else:
         pass
