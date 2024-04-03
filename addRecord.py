@@ -1,7 +1,7 @@
 def add_record(students):
-    id,name,gpa = ask_for_inputs(students)
+    stu_id, name, gpa = ask_for_inputs(students)
 
-    students[id] = {'name' : name, 'gpa': gpa}
+    students[stu_id] = {'name': name, 'gpa': gpa}
 
     return students
 
@@ -39,5 +39,4 @@ def ask_for_inputs(students):
         except:
             print("the GPA should be a number between 0 and 4")
 
-    return id,name,gpa
-
+    return id, name, gpa

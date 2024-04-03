@@ -13,3 +13,4 @@ def read_file_to_dic(STUDENT_FILE_NAME) -> dict:
         students[id] = {"name" : name, "gpa": gpa}
 
     return students
+
