@@ -4,6 +4,7 @@ from internal import display_menu, wrap_function
 from addRecord import add_record
 from removeRecord import remove_record
 from updateFile import update_file
+from sortRecord import sort_menu
 
 STUDENT_FILE_NAME = "students.txt"
 
@@ -17,7 +18,7 @@ def main():
         "Add Record": wrap_function(add_record, student_records),
         "Remove Record": wrap_function(remove_record, student_records),
         "Modify Record": wrap_function(modify_record, student_records),
-        "Sort Records": wrap_function(sort_records, student_records),
+        "Sort Records": wrap_function(sort_menu, student_records),
         "Save And Exit": wrap_function(update_file, student_records, STUDENT_FILE_NAME)
     }
 
