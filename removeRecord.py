@@ -1,21 +1,20 @@
 from internal import take_inputs, wrap_function
 
 
-def id_check(students, student_id) -> bool:
+def id_check(students, student_id) -> tuple[bool, str]:
     try:
         student_id = int(student_id)
         if len(str(student_id)) == 9:
             if student_id in list(students.keys()):
-                return True
+                return True, ""
             else:
-                print("the ID is not there")
+                return False, "the ID is not there"
         else:
-            print("the ID should be 9 integer numbers")
+            return False, "the ID should be 9 integer numbers"
 
     except ValueError:
-        print("the ID should be 9 integer numbers")
+        return False, "the ID should be 9 integer numbers"
 
-    return False
 
 
 def remove_record(students) -> bool:
