@@ -6,6 +6,7 @@ from removeRecord import remove_record
 from updateFile import update_file
 from modifyRecord import modify_record
 from sortRecord import sort_menu
+from searchFromRecords import search_menu
 
 STUDENT_FILE_NAME = "students.txt"
 
@@ -20,6 +21,7 @@ def main():
         "Remove Record": wrap_function(remove_record, student_records),
         "Modify Record": wrap_function(modify_record, student_records),
         "Sort Records": wrap_function(sort_menu, student_records),
+        "Search For Records": wrap_function(search_menu, student_records),
     }
 
     while display_menu(main_menu_options, "Save and Exit", pre="Choose", final="\n"*2):
