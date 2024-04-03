@@ -1,7 +1,8 @@
 from readFileToDic import read_file_to_dic
 from showData import show_data
-from menu import display_menu, wrap_function
+from internal import display_menu, wrap_function
 from addRecord import add_record
+from removeRecord import remove_record
 
 STUDENT_FILE_NAME = "students.txt"
 
@@ -16,7 +17,7 @@ def main():
         "Remove Record": wrap_function(remove_record, student_records),
         "Modify Record": wrap_function(modify_record, student_records),
         "Sort Records": wrap_function(sort_records, student_records),
-        "Save And Exit" : wrap_function(update_file,student_records,STUDENT_FILE_NAME)
+        "Save And Exit": wrap_function(update_file, student_records, STUDENT_FILE_NAME)
     }
 
     display_menu(main_menu_options, "Choose:", "Thank you")

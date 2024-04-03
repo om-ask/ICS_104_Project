@@ -3,9 +3,11 @@ def display_menu(options: dict, pre=None, post=None) -> bool:
 
 
 def take_inputs(input_prompts: dict):
-    results = []
     current_prompt_index = 0
     prompts = list(input_prompts.keys())
+    results = [''] * len(prompts)
+
+    print("Type 'cancel' to stop taking input or 'back' to undo.")
 
     while current_prompt_index < len(prompts):
         prompt = prompts[current_prompt_index]
@@ -24,20 +26,15 @@ def take_inputs(input_prompts: dict):
 
         check_result = input_prompts[prompt](response)
         if check_result:
-            results.append(response)
+            results.remove(current_prompt_index)
+            results.insert(current_prompt_index, response)
             current_prompt_index += 1
 
     return results
 
 
 def wrap_function(function, *args, **kwargs):
-    def wrapped_function():
-        arguments = args
-        kwarguments = kwargs
-        return function(*arguments, **kwargs)
+    def wrapped_function(*args2, **kwargs2):
+        return function(*args, *args2, **kwargs, **kwargs2)
 
     return wrapped_function
-
-
-
-
