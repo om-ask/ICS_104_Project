@@ -1,43 +1,37 @@
 from internal import take_inputs, wrap_function
 
 
-def id_check(students, student_id) -> bool:
+def id_check(students, student_id) -> tuple[bool, str]:
     try:
         student_id = int(student_id)
         if len(str(student_id)) == 9:
             if student_id not in list(students.keys()):
-                return True
+                return True, ""
             else:
-                print("the ID is already there")
+                return False, "the ID is already there"
         else:
-            print("the ID should be 9 integer numbers")
+            return False, "the ID should be 9 integer numbers"
 
     except ValueError:
-        print("the ID should be 9 integer numbers")
-
-    return False
+        return False, "the ID should be 9 integer numbers"
 
 
-def name_check(name) -> bool:
+def name_check(name) -> tuple[bool, str]:
     if len(name.split()) >= 2:
-        return True
+        return True, ""
     else:
-        print("first and second name please")
-
-    return False
+        return False, "first and second name please"
 
 
-def gpa_check(gpa) -> bool:
+def gpa_check(gpa) -> tuple[bool, str]:
     try:
         gpa = float(gpa)
         if 0 <= gpa <= 4:
-            return True
+            return True, ""
         else:
-            print("the GPA should be a number between 0 and 4")
+            return False, "the GPA should be a number between 0 and 4"
     except ValueError:
-        print("the GPA should be a number between 0 and 4")
-
-    return False
+        return False, "the GPA should be a number between 0 and 4"
 
 
 def add_record(students) -> bool:
