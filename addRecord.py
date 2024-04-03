@@ -1,10 +1,12 @@
-def add_record(students:dict[int, dict[str, str or float]]):
-    id,name,gpa = get_inputs(students)
+def add_record(students):
+    id,name,gpa = ask_for_inputs(students)
 
     students[id] = {'name' : name, 'gpa': gpa}
 
+    return students
 
-def get_inputs(students:dict[int, dict[str, str or float]]) -> int:
+
+def ask_for_inputs(students):
     while True:  # ask for id
         id = input("ID: ")
         try:
