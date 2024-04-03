@@ -1,2 +1,2 @@
 # ICS_104_Project
- ICS 104 Student Records Prokect
+ ICS 104 Student Records Project

@@ -56,3 +56,13 @@ def add_record(students) -> bool:
         pass
 
     return True
+
+
+if __name__ == "__main__":
+    from readFileToDic import read_file_to_dic
+    from showData import show_data
+    STUDENT_FILE_NAME = "students.txt"
+    student_records = read_file_to_dic(STUDENT_FILE_NAME)
+    show_data(student_records)
+    add_record(student_records)
+    show_data(student_records)

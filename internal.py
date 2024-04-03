@@ -1,5 +1,9 @@
 def display_menu(options: dict, pre=None, post=None) -> bool:
-    pass
+    if pre:
+        print(pre)
+
+    if post:
+        print(post)
 
 
 def take_inputs(input_prompts: dict):
@@ -26,7 +30,7 @@ def take_inputs(input_prompts: dict):
 
         check_result = input_prompts[prompt](response)
         if check_result:
-            results.remove(current_prompt_index)
+            results.pop(current_prompt_index)
             results.insert(current_prompt_index, response)
             current_prompt_index += 1
 

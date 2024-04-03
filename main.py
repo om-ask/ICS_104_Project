@@ -3,6 +3,7 @@ from showData import show_data
 from internal import display_menu, wrap_function
 from addRecord import add_record
 from removeRecord import remove_record
+from updateFile import update_file
 
 STUDENT_FILE_NAME = "students.txt"
 
@@ -27,8 +28,4 @@ def main():
 
 
 if __name__ == "__main__":
-    student_records = read_file_to_dic(STUDENT_FILE_NAME)
-    show_data(student_records)
-    add_record(student_records)
-    show_data(student_records)
-    # main()
+    main()

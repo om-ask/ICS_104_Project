@@ -1,10 +1,10 @@
-def modify_record(students:dict[int, dict[str, str or float]]):
+def modify_record(students: dict[int, dict[str, str or float]]):
     id = get_id(students)
     gpa = get_gpa()
     students[id]["gpa"] = gpa
 
 
-def get_id(students:dict[int, dict[str, str or float]]) -> int:
+def get_id(students: dict[int, dict[str, str or float]]) -> int:
     while True:  # ask for id
         id = input("ID: ")
         try:
@@ -20,6 +20,7 @@ def get_id(students:dict[int, dict[str, str or float]]) -> int:
             print("the ID should be 9 integer numbers")
 
     return id
+
 
 def get_gpa() -> float:
     while True:  # ask for gpa
