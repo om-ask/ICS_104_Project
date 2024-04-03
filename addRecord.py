@@ -3,13 +3,13 @@ from menu import take_inputs, wrap_function
 def id_check(id, students) -> bool:
     try:
         id = int(id)
-        if id not in list(students.keys()):
-            if len(str(id)) == 9:
+        if len(str(id)) == 9:
+            if id not in list(students.keys()):
                 return True
             else:
-                print("the ID should be 9 integer numbers")
+                print("the ID is already there")
         else:
-            print("the ID is already there")
+            print("the ID should be 9 integer numbers")
     except:
         print("the ID should be 9 integer numbers")
 
