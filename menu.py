@@ -22,7 +22,7 @@ def take_inputs(input_prompts: dict):
             else:
                 return None
 
-        check_result = input_prompts[prompt]
+        check_result = input_prompts[prompt](response)
         if check_result:
             results.append(response)
             current_prompt_index += 1
@@ -30,21 +30,14 @@ def take_inputs(input_prompts: dict):
     return results
 
 
-def wrap_function(function, *args):
+def wrap_function(function, *args, **kwargs):
     def wrapped_function():
         arguments = args
-        return function(*arguments)
+        kwarguments = kwargs
+        return function(*arguments, **kwargs)
 
     return wrapped_function
 
 
 
-
-inputs = {
-    "Enter student id": check1,
-    "Enter student name:": check2,
-    "Enter student gpa": check3,
-}
-
-take_inputs(inputs)
 
