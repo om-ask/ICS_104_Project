@@ -1,4 +1,4 @@
-def show_data(students: dict[int, dict[str, str or float]]):
+def show_data(students: dict[int, dict[str, str or float]]) -> bool:
     lines = []
 
     len_names = []
@@ -16,3 +16,5 @@ def show_data(students: dict[int, dict[str, str or float]]):
 
     for line in lines:
         print(line)
+
+    return True

@@ -1,24 +1,41 @@
-def display_menu(options: dict, back_option, pre=None, post=None, default_question_override=None) -> bool:
-    if default_question_override:
-        input(default_question_override)
-
-    else:
+def display_menu(options: dict, back_option, pre=None, post=None, default_question_override=None, final=None) -> bool:
+    if not default_question_override:
         default_question_override = "Enter a number to choose: "
 
     if pre:
         print(pre)
 
-    option_number = 0
+    back_number = 1
+    choice_dict = {}
     for option_number, option in enumerate(options.keys()):
+        back_number += 1
+        choice_dict[option_number+1] = options[option]
         print(f"{option_number+1} {option}")
 
-    print(f"{option_number + 1} {back_option}")
+    print(f"{back_number} {back_option}")
 
     if post:
         print(post)
 
     while True:
-        pass
+        response = input(default_question_override).strip()
+        if response.isdigit():
+            if int(response) == back_number:
+                return False
+
+            choice = choice_dict.get(int(response), None)
+            if choice is not None:
+                break
+            else:
+                print("Please enter a number that is present.")
+
+        else:
+            print("Please enter a number only.")
+
+    if final:
+        print(final)
+
+    return choice()
 
 
 def take_inputs(input_prompts: dict):
@@ -50,6 +67,7 @@ def take_inputs(input_prompts: dict):
             current_prompt_index += 1
 
         else:
+            # Erase the previous line and print the message
             print(check_message)
 
     return *results,
@@ -63,4 +81,7 @@ def wrap_function(function, *args, **kwargs):
 
 
 if __name__ == "__main__":
-    pass
+    take_inputs({
+        "Test me:": lambda r: (False, "blah blah")
+    })
+

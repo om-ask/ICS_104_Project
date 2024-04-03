@@ -22,7 +22,7 @@ def main():
         "Sort Records": wrap_function(sort_menu, student_records),
     }
 
-    while display_menu(main_menu_options, "Save and Exit", "Choose:", "Thank you"):
+    while display_menu(main_menu_options, "Save and Exit", pre="Choose", final="\n"*2):
         continue
 
     update_file(student_records, STUDENT_FILE_NAME)

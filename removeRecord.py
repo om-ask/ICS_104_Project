@@ -16,7 +16,6 @@ def id_check(students, student_id) -> tuple[bool, str]:
         return False, "the ID should be 9 integer numbers"
 
 
-
 def remove_record(students) -> bool:
 
     record_info = take_inputs({

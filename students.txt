@@ -1,3 +1,3 @@
 202345770,Hashim Khalifa,2.75
-123456789,mohammed khalifa,4.00
-202312340,khalid ahmed,2.50
+123456789,mohammed khalifa,4.0
+202312340,khalid ahmed,2.5
