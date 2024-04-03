@@ -1,57 +1,44 @@
-from menu import take_inputs, wrap_function
+from internal import take_inputs, wrap_function
 
-def id_check(id, students) -> bool:
+
+def id_check(students, student_id) -> bool:
     try:
-        id = int(id)
-        if len(str(id)) == 9:
-            if id in list(students.keys()):
+        student_id = int(student_id)
+        if len(str(student_id)) == 9:
+            if student_id in list(students.keys()):
                 return True
             else:
                 print("the ID is not there")
         else:
             print("the ID should be 9 integer numbers")
-    except:
+
+    except ValueError:
         print("the ID should be 9 integer numbers")
 
     return False
 
 
-def remove_record(students):
+def remove_record(students) -> bool:
 
     record_info = take_inputs({
-        "Enter ID:": wrap_function(id_check, students=students)
+        "Enter ID: ": wrap_function(id_check, students)
     })
 
     if record_info:
-        id = record_info[0]
-        students.pop(id)
-
-        return students
+        student_id = record_info[0]
+        students.pop(int(student_id))
 
     else:
-        return None
+        pass
+
+    return True
 
 
-
-
-
-# def remove_record(students:dict[int, dict[str, str or float]]):
-#     students.pop(get_id(students))
-#
-
-# def get_id(students:dict[int, dict[str, str or float]]) -> int:
-#     while True:  # ask for id
-#         id = input("ID: ")
-#         try:
-#             id = int(id)
-#             if len(str(id)) == 9:
-#                 if id in list(students.keys()):
-#                     break
-#                 else:
-#                     print("the ID is not there")
-#             else:
-#                 print("the ID should be 9 integer numbers")
-#         except:
-#             print("the ID should be 9 integer numbers")
-#
-#     return id
+if __name__ == "__main__":
+    from readFileToDic import read_file_to_dic
+    from showData import show_data
+    STUDENT_FILE_NAME = "students.txt"
+    student_records = read_file_to_dic(STUDENT_FILE_NAME)
+    show_data(student_records)
+    remove_record(student_records)
+    show_data(student_records)

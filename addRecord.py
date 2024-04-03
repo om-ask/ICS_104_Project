@@ -4,13 +4,13 @@ from internal import take_inputs, wrap_function
 def id_check(students, student_id) -> bool:
     try:
         student_id = int(student_id)
-        if student_id not in list(students.keys()):
-            if len(str(student_id)) == 9:
+        if len(str(student_id)) == 9:
+            if student_id not in list(students.keys()):
                 return True
             else:
-                print("the ID should be 9 integer numbers")
+                print("the ID is already there")
         else:
-            print("the ID is already there")
+            print("the ID should be 9 integer numbers")
 
     except ValueError:
         print("the ID should be 9 integer numbers")
@@ -43,9 +43,9 @@ def gpa_check(gpa) -> bool:
 def add_record(students) -> bool:
 
     record_info = take_inputs({
-        "Enter ID:": wrap_function(id_check, students),
-        "Enter Name": name_check,
-        "Enter GPA": gpa_check
+        "Enter ID: ": wrap_function(id_check, students),
+        "Enter Name: ": name_check,
+        "Enter GPA: ": gpa_check
     })
 
     if record_info:
