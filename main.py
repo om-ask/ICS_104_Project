@@ -12,8 +12,9 @@ STUDENT_FILE_NAME = "students.txt"
 
 
 def main():
+    student_records = {}
     # Read students
-    student_records = read_file_to_dic(STUDENT_FILE_NAME)
+    student_records = read_file_to_dic(student_records, STUDENT_FILE_NAME)
 
     main_menu_options = {
         "View Records": wrap_function(show_data, student_records),

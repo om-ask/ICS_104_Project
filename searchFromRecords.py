@@ -1,5 +1,4 @@
 from internal import wrap_function, display_menu, take_inputs
-from showData import show_data
 
 
 def search_menu(student_records: dict) -> bool:
@@ -35,8 +34,7 @@ def search_by_id(students) -> bool:
 
     if record_info:
         student_id = record_info[0]
-        the_student = {}
-        the_student[int(student_id)] = students[int(student_id)]
+        the_student = {int(student_id): students[int(student_id)]}
 
         show_data(the_student)
 
@@ -50,6 +48,6 @@ if __name__ == "__main__":
     from readFileToDic import read_file_to_dic
     from showData import show_data
     STUDENT_FILE_NAME = "students.txt"
-    student_records = read_file_to_dic(STUDENT_FILE_NAME)
-    show_data(student_records)
-    search_by_id(student_records)
+    test_student_records = read_file_to_dic(STUDENT_FILE_NAME)
+    show_data(test_student_records)
+    search_by_id(test_student_records)
