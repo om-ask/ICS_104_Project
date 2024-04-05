@@ -23,47 +23,71 @@ def create_names_inverse_index(full_names: set[str]) -> dict[str, list[tuple[str
 def levenshtein_distance(string1: str, string2: str, prev_state=None) -> tuple[int, list[int]]:
     if not prev_state:
         previous_row = list(range(0, len(string2) + 1))
+        # print('-' * 10)
+        # print(*previous_row)
     else:
         previous_row = prev_state
 
-    for j, character1 in enumerate(string1, start=previous_row[0]+1):
-        print(*previous_row)
+    for j, character1 in enumerate(string1, start=previous_row[0] + 1):
         row = [j]
         for i, character2 in enumerate(string2, start=1):
-            cost = min(row[i - 1] + 1, previous_row[i] + 1, previous_row[i-1] + (1 if character1 != character2 else 0))
+            cost = min(row[i - 1] + 1, previous_row[i] + 1,
+                       previous_row[i - 1] + (1 if character1 != character2 else 0))
             row.append(cost)
         previous_row = row
-    print(*previous_row)
+    # print(*previous_row)
     return previous_row[-1], previous_row
 
 
 def levenshtein_automaton(w_string: str, sorted_strings, threshold: int) -> tuple[str]:
     automatons = []
-    results = []
+    results = {}
     prev_str = None
     for string in sorted_strings:
+        # print("checking", string)
         auto = []
         i = 0
         for a in range(len(automatons)):
             if a == len(string) or prev_str[a] != string[a]:
                 if a:
-                    auto = automatons[a-1]
+                    # print("Found auto!", prev_str, string)
+                    auto = automatons[a - 1]
+                    # print(auto, automatons[a])
                 i = a
                 break
 
         automatons = automatons[:i]
-        while i < len(w_string) and i < len(string):
-            if auto and min(auto) > threshold:
-                break
-            auto = levenshtein_distance(string[i], w_string, auto)[1]
-            automatons.append(auto)
-            i += 1
-        else:
-            results.append(string)
-
         prev_str = string
 
-    return *results,
+        if auto and min(auto) > threshold:
+            # print("threshold passed for", string)
+            continue
+        while i < len(w_string) and i < len(string):
+            auto = levenshtein_distance(string[i], w_string, auto)[1]
+            # print(string[i], auto)
+            automatons.append(auto)
+            i += 1
+            if min(auto) > threshold:
+                # print("threshold passed for", string)
+                break
+        else:
+            if i != len(string) or auto[-1] <= threshold:
+                results[string] = min(auto)
+
+    print(results)
+    return *sorted(results, key=results.get),
+
+
+def search_names(query: str, names, inverse_index: dict[str, list[tuple[str, int]]]) -> tuple[str]:
+    query = query.strip()
+    query_names = query.split()
+    if len(query_names) == 1:
+        possible_names = levenshtein_automaton(query, sorted(inverse_index.keys()), len(query) // 3)
+        results = {full_name: order for name in possible_names for full_name, order in inverse_index[name]}
+        return *sorted(results, key=results.get),
+
+    else:
+        return levenshtein_automaton(query, names, len(query) // 3)
 
 
 #
@@ -137,4 +161,9 @@ def levenshtein_automaton(w_string: str, sorted_strings, threshold: int) -> tupl
 if __name__ == "__main__":
     list_of_searches = ["omar hf", "khalifa mohammed", "hashem khalifa", "krater omar", "kalifa moh", "mohammad abdu"]
     full_index = create_names_inverse_index(set(list_of_searches))
-    print(levenshtein_automaton("kha", list_of_searches, 1))
+    sorted_names = sorted(list_of_searches)
+    print(sorted_names)
+    while True:
+        test_query = input("Search: ")
+        print(len(test_query) // 3)
+        print("Search Results:", search_names(test_query, sorted_names, full_index))
