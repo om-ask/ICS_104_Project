@@ -23,20 +23,13 @@ def main():
         **menu_option("Search Records", search_menu, data),
 
     }
-    while True:
-        code, menu_response, menu_return = display_menu(main_menu, "Save and Exit", pre="Choose:", final="\n" * 2)
-        print(code, menu_response, menu_return)
-        if code == Codes.BACK:
-            try:
-                update_file(STUDENT_FILE_NAME, data)
+    display_menu(main_menu, "Save and Exit", pre="Choose:", final="\n" * 2, loop=True, loop_over_success=True)
 
-            except IOError:
-                print(f"ERROR: Could not write to {STUDENT_FILE_NAME}")
+    try:
+        update_file(STUDENT_FILE_NAME, data)
 
-            break
-
-        else:
-            print("\n")
+    except IOError:
+        print(f"ERROR: Could not write to {STUDENT_FILE_NAME}")
 
 
 if __name__ == "__main__":

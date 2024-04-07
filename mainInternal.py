@@ -105,8 +105,22 @@ def show_data(student_id_records: dict[int, dict[str, str or float]]) -> tuple:
 
 
 # TODO Make code readable for all functions below
-def display_menu(options_menu: dict, back_option, pre='', post='', default_question_override='', final='') \
-        -> tuple:
+def display_menu(options_menu: dict, back_option, pre='', post='', default_question_override='', final='',
+                 loop=False, loop_over_success=False) -> tuple:
+    if loop:
+        while True:
+            code, menu_response, menu_return = \
+                display_menu(options_menu, back_option, pre, post, default_question_override, final, loop=False)
+
+            if code == Codes.INCONCLUSIVE:
+                continue
+            elif loop_over_success and code == Codes.SUCCESS:
+                continue
+            else:
+                break
+
+        return code, menu_response, menu_return
+
     if not default_question_override:
         default_question_override = "Enter a number to choose: "
 
@@ -208,7 +222,7 @@ def search_input_analyzer(data: dict, response: str) -> tuple:
     code, menu_response, menu_return = display_menu({"Choose": None}, "Search Again")
 
     if code == Codes.SUCCESS:
-        return Codes.SUCCESS, input("Enter ID")
+        return Codes.SUCCESS, input("Enter ID: ")
 
     else:
         return code, menu_return

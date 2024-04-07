@@ -7,7 +7,7 @@ def add_record(data: dict) -> tuple:
     code, record_info = take_inputs({
         **input_prompt("Enter ID:", (add_id_check, data["ID Records"])),
         **input_prompt("Enter Name:", (name_check,)),
-        **input_prompt("Enter ID:", (gpa_check,)),
+        **input_prompt("Enter GPA:", (gpa_check,)),
     })
 
     if code == Codes.SUCCESS:
@@ -68,7 +68,7 @@ def modify_record_menu(data) -> tuple:
         **menu_option("By ID", modify_by_id, data),
     }
 
-    code, menu_response, menu_return = display_menu(modify_menu, "Back")
+    code, menu_response, menu_return = display_menu(modify_menu, "Back", loop=True)
 
     if code == Codes.SUCCESS:
         student_id, student_gpa = int(menu_return[0]), float(menu_return[1])
@@ -92,13 +92,13 @@ if __name__ == "__main__":
     test_student_records = test_data["ID Records"]
 
     show_data(test_student_records)
-    add_record(test_student_records)
+    add_record(test_data)
     show_data(test_student_records)
 
     show_data(test_student_records)
-    modify_record_menu(test_student_records)
+    modify_record_menu(test_data)
     show_data(test_student_records)
 
     show_data(test_student_records)
-    remove_record(test_student_records)
+    remove_record(test_data)
     show_data(test_student_records)
