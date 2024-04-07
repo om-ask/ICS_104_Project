@@ -1,37 +1,46 @@
-from mainInternal import wrap_function, display_menu
-from showData import show_data
+from mainInternal import display_menu, show_data, Codes, menu_option
 
 
-def sort_menu(student_records: dict) -> tuple:
+def sort_menu(data: dict) -> tuple:
     sort_menu_options = {
-        "Sort By ID": wrap_function(sort_by_id, student_records),
-        "Sort By GPA": wrap_function(sort_by_gpa, student_records)
+        **menu_option("Sort by ID", sort_by_id, data),
+        **menu_option("Sort by GPA", sort_by_gpa, data),
     }
 
-    display_menu(sort_menu_options, "Back", pre="Choose sort type:", final="\n"*2)
+    code, menu_response, menu_return = display_menu(sort_menu_options, "Back", pre="Choose sort type:", final="\n" * 2)
 
-    return 0, None
-
-
-def sort_by_id(student_records: dict) -> tuple:
-    student_records = {k: v for k, v in sorted(student_records.items())}
-    show_data(student_records)
-
-    return 0, None
+    return code, menu_return
 
 
-def sort_by_gpa(student_records: dict) -> tuple:
-    student_records = {k: v for k, v in sorted(student_records.items(), key=lambda v: v[1]['gpa'], reverse=True)}
-    show_data(student_records)
+def sort_by_id(data: dict, descending=False) -> tuple:
+    sorted_student_records = {student_id: student_record
+                              for student_id, student_record
+                              in sorted(data["ID Records"].items(), reverse=descending)}
 
-    return 0, None
+    show_data(sorted_student_records)
+    return Codes.SUCCESS, Codes.NO_RETURN
+
+
+def sort_by_gpa(data: dict, descending=True) -> tuple:
+    def gpa(student_info):
+        student_id = student_info[0]
+        return data["ID Records"][student_id]["gpa"]
+
+    sorted_student_records = {student_id: student_record
+                              for student_id, student_record
+                              in sorted(data["ID Records"].items(), key=gpa, reverse=descending)}
+
+    show_data(sorted_student_records)
+    return Codes.SUCCESS, Codes.NO_RETURN
 
 
 if __name__ == "__main__":
-    from fileOperations import read_file_to_data
+    from fileOperations import read_file
 
     STUDENT_FILE_NAME = "students.txt"
-    # test_student_records = read_file_to_data(,
+    test_data = read_file(STUDENT_FILE_NAME)
+    test_student_records = test_data["ID Records"]
+
     show_data(test_student_records)
     sort_by_id(test_student_records)
 

@@ -1,38 +1,37 @@
-from mainInternal import wrap_function, display_menu, take_inputs, id_check
+from mainInternal import display_menu, take_inputs, id_check, show_data, Codes, menu_option, input_prompt
 
 
-def search_menu(student_records: dict) -> tuple:
+def search_menu(data: dict) -> tuple:
     sort_menu_options = {
-        "Search By ID": wrap_function(search_by_id, student_records)
+        **menu_option("Search By ID", search_by_id, data)
     }
 
-    display_menu(sort_menu_options, "Back", pre="Choose search type:", final="\n"*2)
+    code, menu_response, menu_return = display_menu(sort_menu_options, "Back", pre="Choose search type:", final="\n"*2)
 
-    return 0, None
+    return code, menu_return
 
 
-def search_by_id(students) -> bool:
+def search_by_id(data: dict) -> tuple:
 
-    success, record_info = take_inputs({
-        "Enter ID: ": wrap_function(id_check, students)
+    code, record_info = take_inputs({
+        **input_prompt("Enter ID: ", (id_check, data["ID Records"]))
     })
 
-    if success == 0:
-        student_id = record_info[0]
-        the_student = {int(student_id): students[int(student_id)]}
+    if code == Codes.SUCCESS:
+        student_id = int(record_info[0])
+        student_record = {student_id: data["ID Records"][student_id]}
 
-        show_data(the_student)
+        show_data(student_record)
 
-    else:
-        pass
-
-    return True
+    return code, record_info
 
 
 if __name__ == "__main__":
-    from fileOperations import read_file_to_data
-    from showData import show_data
+    from fileOperations import read_file
+
     STUDENT_FILE_NAME = "students.txt"
-    # test_student_records = read_file_to_data(,
+    test_data = read_file(STUDENT_FILE_NAME)
+    test_student_records = test_data["ID Records"]
+
     show_data(test_student_records)
     search_by_id(test_student_records)

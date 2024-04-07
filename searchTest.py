@@ -1,5 +1,3 @@
-
-#
 # def create_names_inverse_index(full_names: set[str]) \
 #         -> tuple[dict[str, list[tuple[str, int]]], dict[str, list[tuple[str, int]]]]:
 #     names = {name for full_name in full_names for name in full_name.split()}
@@ -65,14 +63,19 @@
 #             name_ranking[possible_name[0]] = name_ranking.get(name, 0) + 1
 #
 #     return *name_ranking.keys(),
-from mainInternal import create_names_inverse_index
-from searchInternal import search_names
 
 if __name__ == "__main__":
+    from mainInternal import update_inverse_index
+    from searchInternal import search_names
+    # noinspection SpellCheckingInspection
+
     list_of_searches = ["omar hf", "khalifa mohammed", "hashem khalifa", "krater omar", "kalifa moh", "mohammad abdu"]
-    full_index = create_names_inverse_index(set(list_of_searches))
+
+    full_index = update_inverse_index({}, set(list_of_searches))
     sorted_names = sorted(list_of_searches)
+
     print(sorted_names)
+
     while True:
         test_query = input("Search: ")
         print(len(test_query) // 3)

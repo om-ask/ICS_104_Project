@@ -1,72 +1,104 @@
-from mainInternal import take_inputs, wrap_function, gpa_check, name_check, id_check, search_input, display_menu
+from mainInternal import take_inputs, gpa_check, name_check, id_check, search_input_analyzer, \
+    display_menu, show_data, add_id_check, update_inverse_index, Codes, menu_option, input_prompt
 
 
-def add_record(students) -> tuple:
-    success, record_info = take_inputs({
-        "Enter ID: ": wrap_function(id_check, students),
-        "Enter Name: ": name_check,
-        "Enter GPA: ": gpa_check
+def add_record(data: dict) -> tuple:
+
+    code, record_info = take_inputs({
+        **input_prompt("Enter ID:", (add_id_check, data["ID Records"])),
+        **input_prompt("Enter Name:", (name_check,)),
+        **input_prompt("Enter ID:", (gpa_check,)),
     })
 
-    if success == 0:
-        student_id, name, gpa = record_info
-        students[int(student_id)] = {'name': name, 'gpa': float(gpa)}
+    if code == Codes.SUCCESS:
+        student_id = int(record_info[0])
+        student_name = record_info[1]
+        student_gpa = float(record_info[2])
 
-    return 0, None
+        data["Records"].append({"id": student_id, "name": student_name, "gpa": student_gpa})
+        data["ID Records"][student_id] = {"name": student_name, "gpa": student_gpa}
+        data["Name Records"][student_name] = {"id": int(student_id), "gpa": student_gpa}
+        data["Names"].add(student_name)
+
+        update_inverse_index(data["Inverse Index"], (student_name,))
+
+    return code, record_info
 
 
-def remove_record(students) -> tuple:
-    success, record_info = take_inputs({
-        "Enter ID: ": wrap_function(id_check, students)
+def remove_record(data: dict) -> tuple:
+    code, record_info = take_inputs({
+        **input_prompt("Enter ID:", (add_id_check, data["ID Records"])),
     })
 
-    if success == 0:
-        student_id = record_info[0]
-        students.pop(int(student_id))
+    if code == Codes.SUCCESS:
+        student_id = int(record_info[0])
+        student_name = data["ID Records"][student_id]["name"]
 
-    return 0, None
+        data["ID Records"].pop(student_id)
+        data["Name Records"].pop(student_name)
+        data["Names"].remove(student_name)
+        # data["Names"] &= set(data["Name Records"].keys())
+        for record in data["Records"]:
+            if record["id"] == student_id:
+                data["Records"].remove(record)
+                break
+
+    return code, record_info
 
 
-def modify_record(students, students_by_name, names, inverse_index) -> tuple:
-    menu_choice, menu_response, menu_return = display_menu(
-        {"Search For a Student": wrap_function(search_input, names, students_by_name, inverse_index)}, "Enter ID")
+def modify_by_search(data) -> tuple:
+    return take_inputs({
+        **input_prompt("Search: ", check=(id_check, data["ID Records"]), analyzer=(search_input_analyzer, data)),
+        **input_prompt("Enter GPA: ", check=(gpa_check,))
+    })
 
-    if menu_choice == 1 and menu_response == 0:
-        student_id = menu_return
-        success, record_info = take_inputs({
-            "Enter GPA: ": gpa_check
-        })
-        if success == 0:
-            gpa = record_info[0]
-            students[int(student_id)]['gpa'] = float(gpa)
 
-    else:
-        success, record_info = take_inputs({
-            "Enter ID: ": wrap_function(id_check, students),
-            "Enter GPA: ": gpa_check
-        })
+def modify_by_id(data) -> tuple:
+    return take_inputs({
+        **input_prompt("Enter ID: ", check=(id_check, data["ID Records"])),
+        **input_prompt("Enter GPA: ", check=(gpa_check,))
+    })
 
-        if success == 0:
-            student_id, gpa = record_info
-            students[int(student_id)]['gpa'] = float(gpa)
 
-    return 0, None
+def modify_record_menu(data) -> tuple:
+    show_data(data["ID Records"])
+
+    modify_menu = {
+        **menu_option("By Searching For a Student", modify_by_search, data),
+        **menu_option("By ID", modify_by_id, data),
+    }
+
+    code, menu_response, menu_return = display_menu(modify_menu, "Back")
+
+    if code == Codes.SUCCESS:
+        student_id, student_gpa = int(menu_return[0]), float(menu_return[1])
+        student_name = data["ID Records"][student_id]["name"]
+
+        data["ID Records"][student_id]["gpa"] = student_gpa
+        data["Name Records"][student_name]["gpa"] = student_gpa
+        for record in data["Records"]:
+            if record["id"] == student_id:
+                record["gpa"] = student_gpa
+                break
+
+    return code, menu_return
 
 
 if __name__ == "__main__":
-    from showData import show_data
+    from fileOperations import read_file
 
     STUDENT_FILE_NAME = "students.txt"
-    # student_records = read_file_to_data(,
+    test_data = read_file(STUDENT_FILE_NAME)
+    test_student_records = test_data["ID Records"]
 
-    show_data(student_records)
-    add_record(student_records)
-    show_data(student_records)
+    show_data(test_student_records)
+    add_record(test_student_records)
+    show_data(test_student_records)
 
-    show_data(student_records)
-    modify_record(student_records)
-    show_data(student_records)
+    show_data(test_student_records)
+    modify_record_menu(test_student_records)
+    show_data(test_student_records)
 
-    show_data(student_records)
-    remove_record(student_records)
-    show_data(student_records)
+    show_data(test_student_records)
+    remove_record(test_student_records)
+    show_data(test_student_records)

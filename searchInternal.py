@@ -1,4 +1,4 @@
-
+# TODO Make code readable here
 def levenshtein_distance(string1: str, string2: str, prev_state=None) -> tuple[int, list[int]]:
     if not prev_state:
         previous_row = list(range(0, len(string2) + 1))
@@ -8,11 +8,12 @@ def levenshtein_distance(string1: str, string2: str, prev_state=None) -> tuple[i
         previous_row = prev_state
 
     for j, character1 in enumerate(string1, start=previous_row[0] + 1):
-        row = [j]
+        row = [j, ]
         for i, character2 in enumerate(string2, start=1):
-            cost = min(row[i - 1] + 1, previous_row[i] + 1,
-                       previous_row[i - 1] + (1 if character1 != character2 else 0))
-            row.append(cost)
+            row.append(min(row[i - 1] + 1,
+                       previous_row[i] + 1,
+                       previous_row[i - 1] + (character1 != character2)))
+
         previous_row = row
     # print(*previous_row)
     return previous_row[-1], previous_row
