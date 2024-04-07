@@ -1,5 +1,6 @@
 from mainInternal import take_inputs, gpa_check, name_check, id_check, search_input_analyzer, \
-    display_menu, show_data, add_id_check, update_inverse_index, Codes, menu_option, input_prompt
+    display_menu, show_data, add_id_check, update_inverse_index, Codes, menu_option, input_prompt, \
+    del_from_inverse_index
 
 
 def add_record(data: dict) -> tuple:
@@ -27,7 +28,7 @@ def add_record(data: dict) -> tuple:
 
 def remove_record(data: dict) -> tuple:
     code, record_info = take_inputs({
-        **input_prompt("Enter ID:", (add_id_check, data["ID Records"])),
+        **input_prompt("Enter ID:", (id_check, data["ID Records"])),
     })
 
     if code == Codes.SUCCESS:
@@ -42,6 +43,8 @@ def remove_record(data: dict) -> tuple:
             if record["id"] == student_id:
                 data["Records"].remove(record)
                 break
+
+        del_from_inverse_index(data["Inverse Index"], student_name)
 
     return code, record_info
 

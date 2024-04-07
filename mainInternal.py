@@ -256,8 +256,7 @@ def valid_option(input_response: str, option: str, threshold: int) -> bool:
     return NotImplemented  # TODO Implement this
 
 
-def update_inverse_index(inverse_index: dict[str, list[tuple[str, int]]], iterable) \
-        -> dict[str, list[tuple[str, int]]]:
+def update_inverse_index(inverse_index: dict[str, list[tuple[str, int]]], iterable) -> dict[str, list[tuple[str, int]]]:
     for i in iterable:
         tokens = i.split()
         for token_index, token in enumerate(tokens):
@@ -265,6 +264,17 @@ def update_inverse_index(inverse_index: dict[str, list[tuple[str, int]]], iterab
 
             inverse_index.setdefault(token, [])
             inverse_index[token].append((i, token_index))
+
+    return inverse_index
+
+
+def del_from_inverse_index(inverse_index: dict[str, list[tuple[str, int]]], string) -> dict[str, list[tuple[str, int]]]:
+    tokens = string.split()
+    for token_index, token in enumerate(tokens):
+        token_list = inverse_index[token.lower()]
+        token_list.remove((string, token_index))
+        if not token_list:
+            inverse_index.pop(token.lower())
 
     return inverse_index
 

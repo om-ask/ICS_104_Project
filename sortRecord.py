@@ -1,6 +1,7 @@
 from mainInternal import display_menu, show_data, Codes, menu_option
 
 
+# TODO Allow choice between ascending or descending order
 def sort_menu(data: dict) -> tuple:
     sort_menu_options = {
         **menu_option("Sort by ID", sort_by_id, data),
