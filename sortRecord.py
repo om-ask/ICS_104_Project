@@ -1,6 +1,7 @@
 from mainInternal import show_data, Codes, RecordsTable, Menu, StudentRecord
 
 
+# TODO Sort by name
 def sort_menu(student_records: RecordsTable):
     sort_type_menu = Menu()
     sort_type_menu.add_option("Sort by ID", sort_records, student_records, "id")

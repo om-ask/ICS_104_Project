@@ -1,5 +1,4 @@
 from enum import Enum
-
 from searchInternal import levenshtein_automaton
 
 
@@ -322,6 +321,12 @@ class Inputs:
 
             else:
                 analyzed_response = response
+
+            if input_check is None:
+                results.pop(current_prompt_index)
+                results.insert(current_prompt_index, analyzed_response)
+                current_prompt_index += 1
+                continue
 
             check_success, check_message = input_check(analyzed_response)
             if check_success:
