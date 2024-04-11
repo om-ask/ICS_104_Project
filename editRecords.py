@@ -1,107 +1,86 @@
-from mainInternal import take_inputs, gpa_check, name_check, id_check, search_input_analyzer, \
-    display_menu, show_data, add_id_check, update_inverse_index, Codes, menu_option, input_prompt, \
-    del_from_inverse_index
+from mainInternal import RecordsTable, Inputs, StudentRecord, Codes, show_data, Menu
 
 
-def add_record(data: dict) -> tuple:
+def add_record(student_records: RecordsTable):
+    inputs = Inputs()
+    inputs.add_prompt("Enter ID:", student_records.new_id_check)
+    inputs.add_prompt("Enter Name:", StudentRecord.valid_name_check)
+    inputs.add_prompt("Enter GPA:", StudentRecord.valid_gpa_check)
 
-    code, record_info = take_inputs({
-        **input_prompt("Enter ID:", (add_id_check, data["ID Records"])),
-        **input_prompt("Enter Name:", (name_check,)),
-        **input_prompt("Enter GPA:", (gpa_check,)),
-    })
+    input_return = inputs.take_inputs()
 
-    if code == Codes.SUCCESS:
-        student_id = int(record_info[0])
-        student_name = record_info[1]
-        student_gpa = float(record_info[2])
+    if input_return == Codes.BACK:
+        return Codes.BACK
 
-        data["Records"].append({"id": student_id, "name": student_name, "gpa": student_gpa})
-        data["ID Records"][student_id] = {"name": student_name, "gpa": student_gpa}
-        data["Name Records"][student_name] = {"id": int(student_id), "gpa": student_gpa}
-        data["Names"].add(student_name)
+    student_id, student_name, student_gpa = int(input_return[0]), input_return[1], float(input_return[2])
 
-        update_inverse_index(data["Inverse Index"], (student_name,))
-
-    return code, record_info
+    new_record = StudentRecord(student_id, student_name, student_gpa)
+    student_records.add_record(new_record)
 
 
-def remove_record(data: dict) -> tuple:
-    code, record_info = take_inputs({
-        **input_prompt("Enter ID:", (id_check, data["ID Records"])),
-    })
+def remove_record(student_records: RecordsTable):
+    inputs = Inputs()
+    inputs.add_prompt("Enter ID:", student_records.present_id_check)
 
-    if code == Codes.SUCCESS:
-        student_id = int(record_info[0])
-        student_name = data["ID Records"][student_id]["name"]
+    input_return = inputs.take_inputs()
 
-        data["ID Records"].pop(student_id)
-        data["Name Records"].pop(student_name)
-        data["Names"].remove(student_name)
-        # data["Names"] &= set(data["Name Records"].keys())
-        for record in data["Records"]:
-            if record["id"] == student_id:
-                data["Records"].remove(record)
-                break
+    if input_return == Codes.BACK:
+        return Codes.BACK
 
-        del_from_inverse_index(data["Inverse Index"], student_name)
+    student_id = int(input_return[0])
 
-    return code, record_info
+    record_to_remove = student_records.get_record(student_id=student_id)
+    student_records.remove_record(record_to_remove)
 
 
-def modify_by_search(data) -> tuple:
-    return take_inputs({
-        **input_prompt("Search: ", check=(id_check, data["ID Records"]), analyzer=(search_input_analyzer, data)),
-        **input_prompt("Enter GPA: ", check=(gpa_check,))
-    })
+def modify_by_search(student_records: RecordsTable):
+    inputs = Inputs()
+    inputs.add_prompt("Search:", student_records.present_id_check, analyzer=student_records.search_analyzer)
+    inputs.add_prompt("Enter GPA:", StudentRecord.valid_gpa_check)
+
+    return inputs.take_inputs()
 
 
-def modify_by_id(data) -> tuple:
-    return take_inputs({
-        **input_prompt("Enter ID: ", check=(id_check, data["ID Records"])),
-        **input_prompt("Enter GPA: ", check=(gpa_check,))
-    })
+def modify_by_id(student_records: RecordsTable):
+    inputs = Inputs()
+    inputs.add_prompt("Enter ID:", student_records.present_id_check)
+    inputs.add_prompt("Enter GPA:", StudentRecord.valid_gpa_check)
+
+    return inputs.take_inputs()
 
 
-def modify_record_menu(data) -> tuple:
-    show_data(data["ID Records"])
+def modify_record_menu(student_records: RecordsTable):
+    show_data(student_records.raw())
 
-    modify_menu = {
-        **menu_option("By Searching For a Student", modify_by_search, data),
-        **menu_option("By ID", modify_by_id, data),
-    }
+    modify_menu = Menu()
+    modify_menu.add_option("By Searching For a Student", modify_by_search, student_records)
+    modify_menu.add_option("By ID", modify_by_id, student_records)
 
-    code, menu_response, menu_return = display_menu(modify_menu, "Back", loop=True)
+    response_number, menu_return = modify_menu.display()
 
-    if code == Codes.SUCCESS:
-        student_id, student_gpa = int(menu_return[0]), float(menu_return[1])
-        student_name = data["ID Records"][student_id]["name"]
+    if menu_return == Codes.BACK:
+        return Codes.BACK
 
-        data["ID Records"][student_id]["gpa"] = student_gpa
-        data["Name Records"][student_name]["gpa"] = student_gpa
-        for record in data["Records"]:
-            if record["id"] == student_id:
-                record["gpa"] = student_gpa
-                break
-
-    return code, menu_return
+    student_id, student_gpa = int(menu_return[0]), float(menu_return[1])
+    record_to_modify = student_records.get_record(student_id=student_id)
+    record_to_modify.modify_gpa(student_gpa)
 
 
 if __name__ == "__main__":
-    from fileOperations import read_file
-
     STUDENT_FILE_NAME = "students.txt"
-    test_data = read_file(STUDENT_FILE_NAME)
-    test_student_records = test_data["ID Records"]
+    # Create student records and read from file
+    records = RecordsTable()
+    records.read_file(STUDENT_FILE_NAME)
 
-    show_data(test_student_records)
-    add_record(test_data)
-    show_data(test_student_records)
+    show_data(records.raw())
+    add_record(records)
+    show_data(records.raw())
 
-    show_data(test_student_records)
-    modify_record_menu(test_data)
-    show_data(test_student_records)
+    show_data(records.raw())
+    modify_record_menu(records)
+    show_data(records.raw())
 
-    show_data(test_student_records)
-    remove_record(test_data)
-    show_data(test_student_records)
+    show_data(records.raw())
+    remove_record(records)
+    show_data(records.raw())
+

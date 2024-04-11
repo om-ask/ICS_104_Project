@@ -1,37 +1,38 @@
-from mainInternal import display_menu, take_inputs, id_check, show_data, Codes, menu_option, input_prompt
+from mainInternal import show_data, Codes, RecordsTable, Menu, Inputs
 
 
-def search_menu(data: dict) -> tuple:
-    sort_menu_options = {
-        **menu_option("Search By ID", search_by_id, data)
-    }
+def search_menu(record_table: RecordsTable):
+    search_type_menu = Menu()
+    search_type_menu.add_option("Search by ID", search_by_id, record_table)
 
-    code, menu_response, menu_return = display_menu(sort_menu_options, "Back", pre="Choose search type:", final="\n"*2)
+    menu_return = Codes.INCONCLUSIVE
+    while menu_return == Codes.INCONCLUSIVE:
+        choice_number, menu_return = search_type_menu.display(pre="Choose search type:", final="\n"*2)
 
-    return code, menu_return
+    if menu_return == Codes.BACK:
+        return Codes.BACK
 
 
-def search_by_id(data: dict) -> tuple:
+def search_by_id(record_table: RecordsTable):
+    inputs = Inputs()
+    inputs.add_prompt("Enter ID: ", record_table.present_id_check)
 
-    code, record_info = take_inputs({
-        **input_prompt("Enter ID: ", (id_check, data["ID Records"]))
-    })
+    input_return = inputs.take_inputs()
 
-    if code == Codes.SUCCESS:
-        student_id = int(record_info[0])
-        student_record = {student_id: data["ID Records"][student_id]}
+    if input_return == Codes.BACK:
+        return Codes.BACK
 
-        show_data(student_record)
+    student_id = int(input_return[0])
+    student_record = record_table.get_record(student_id=student_id)
 
-    return code, record_info
+    show_data(student_record.raw())
 
 
 if __name__ == "__main__":
-    from fileOperations import read_file
-
     STUDENT_FILE_NAME = "students.txt"
-    test_data = read_file(STUDENT_FILE_NAME)
-    test_student_records = test_data["ID Records"]
+    # Create student records and read from file
+    records = RecordsTable()
+    records.read_file(STUDENT_FILE_NAME)
 
-    show_data(test_student_records)
-    search_by_id(test_student_records)
+    show_data(records.raw())
+    search_menu(records)

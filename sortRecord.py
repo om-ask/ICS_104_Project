@@ -1,48 +1,51 @@
-from mainInternal import display_menu, show_data, Codes, menu_option
+from mainInternal import show_data, Codes, RecordsTable, Menu, StudentRecord
 
 
-# TODO Allow choice between ascending or descending order
-def sort_menu(data: dict) -> tuple:
-    sort_menu_options = {
-        **menu_option("Sort by ID", sort_by_id, data),
-        **menu_option("Sort by GPA", sort_by_gpa, data),
-    }
+def sort_menu(student_records: RecordsTable):
+    sort_type_menu = Menu()
+    sort_type_menu.add_option("Sort by ID", sort_records, student_records, "id")
+    sort_type_menu.add_option("Sort by GPA", sort_records, student_records, "gpa")
 
-    code, menu_response, menu_return = display_menu(sort_menu_options, "Back", pre="Choose sort type:", final="\n" * 2)
+    menu_return = Codes.INCONCLUSIVE
+    while menu_return == Codes.INCONCLUSIVE:
+        choice_number, menu_return = sort_type_menu.display(pre="Choose sort type:", final="\n" * 2)
 
-    return code, menu_return
-
-
-def sort_by_id(data: dict, descending=False) -> tuple:
-    sorted_student_records = {student_id: student_record
-                              for student_id, student_record
-                              in sorted(data["ID Records"].items(), reverse=descending)}
-
-    show_data(sorted_student_records)
-    return Codes.SUCCESS, Codes.NO_RETURN
+    if menu_return == Codes.BACK:
+        return Codes.BACK
 
 
-def sort_by_gpa(data: dict, descending=True) -> tuple:
-    def gpa(student_info):
-        student_id = student_info[0]
-        return data["ID Records"][student_id]["gpa"]
+def sort_records(student_records: RecordsTable, sort_type="gpa"):
+    sort_order_menu = Menu()
+    sort_order_menu.add_option("Ascending")
+    sort_order_menu.add_option("Descending")
 
-    sorted_student_records = {student_id: student_record
-                              for student_id, student_record
-                              in sorted(data["ID Records"].items(), key=gpa, reverse=descending)}
+    choice_number, menu_return = sort_order_menu.display(pre="Choose sort order:", final="\n" * 2)
+    if menu_return == Codes.BACK:
+        return Codes.BACK
 
-    show_data(sorted_student_records)
-    return Codes.SUCCESS, Codes.NO_RETURN
+    elif choice_number == 1:
+        descending = False
+
+    else:
+        descending = True
+
+    if sort_type == "id":
+        sorted_student_records = sorted(student_records.records(), key=StudentRecord.id, reverse=descending)
+
+    else:
+        sorted_student_records = sorted(student_records.records(), key=StudentRecord.gpa, reverse=descending)
+
+    sorted_record_table = RecordsTable(sorted_student_records)
+    show_data(sorted_record_table.raw())
 
 
 if __name__ == "__main__":
-    from fileOperations import read_file
-
     STUDENT_FILE_NAME = "students.txt"
-    test_data = read_file(STUDENT_FILE_NAME)
-    test_student_records = test_data["ID Records"]
+    # Create student records and read from file
+    records = RecordsTable()
+    records.read_file(STUDENT_FILE_NAME)
 
-    show_data(test_student_records)
-    sort_by_id(test_student_records)
+    show_data(records.raw())
+    sort_menu(records)
 
-    sort_by_gpa(test_student_records)
+
