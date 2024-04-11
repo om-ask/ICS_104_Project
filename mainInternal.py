@@ -173,15 +173,20 @@ class RecordsTable:
         # Show data
         show_data(possible_records.raw())
 
-        search_menu = Menu(back_option="Search Again")
+        search_menu = Menu()
         search_menu.add_option("Choose")
-        choice_number, return_code = search_menu.display()
+        search_menu.add_option("Search Again")
 
-        if return_code == Codes.SUCCESS:
-            return input("Enter ID: ")
+        choice_number, menu_return = search_menu.display()
+
+        if menu_return == Codes.BACK:
+            return Codes.BACK
+
+        if choice_number == 2:
+            return Codes.BACK
 
         else:
-            return return_code
+            return input("Enter ID: ")
 
     def present_id_check(self, response: str) -> tuple[bool, str]:
         try:

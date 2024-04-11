@@ -56,7 +56,9 @@ def modify_record_menu(student_records: RecordsTable):
     modify_menu.add_option("By Searching For a Student", modify_by_search, student_records)
     modify_menu.add_option("By ID", modify_by_id, student_records)
 
-    response_number, menu_return = modify_menu.display()
+    menu_return = Codes.INCONCLUSIVE
+    while menu_return == Codes.INCONCLUSIVE:
+        response_number, menu_return = modify_menu.display()
 
     if menu_return == Codes.BACK:
         return Codes.BACK
@@ -83,4 +85,3 @@ if __name__ == "__main__":
     show_data(records.raw())
     remove_record(records)
     show_data(records.raw())
-
