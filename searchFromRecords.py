@@ -22,7 +22,7 @@ def search_by_name(record_table: RecordsTable):
     if input_return == Codes.BACK:
         return Codes.BACK
 
-    query = input_return[0]
+    query = input_return
     results_records = record_table.search_record(query)
 
     show_data(results_records.raw())
@@ -37,14 +37,14 @@ def search_by_id(record_table: RecordsTable):
     if input_return == Codes.BACK:
         return Codes.BACK
 
-    student_id = int(input_return[0])
+    student_id = int(input_return)
     student_record = record_table.get_record(student_id=student_id)
 
     show_data(student_record.raw())
 
 
 if __name__ == "__main__":
-    STUDENT_FILE_NAME = "students.txt"
+    STUDENT_FILE_NAME = "students2.txt"
     # Create student records and read from file
     records = RecordsTable()
     records.read_file(STUDENT_FILE_NAME)

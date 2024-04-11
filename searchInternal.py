@@ -1,4 +1,4 @@
-# TODO Make code readable here
+# TODO Make code readable here (thenextyay)
 def calculate_next_levenshtein_row(character1: str, main_string: str, previous_row: list) -> list[int]:
     starting_column = previous_row[0] + 1
     next_row: list = [starting_column, ]
@@ -18,16 +18,17 @@ def levenshtein_automaton(comparison_string: str, sorted_strings, threshold: int
     results = {}
     prev_str = ''
 
-    for string in sorted_strings:
-        string = string.lower() if not case_sensitive else string
+    for original_string in sorted_strings:
+        string = original_string.lower() if not case_sensitive else original_string
         character_index = 0
 
         while prev_str and prev_str[character_index] == string[character_index]:
-            if prev_str[character_index] != string[character_index] or character_index == len(string) or character_index == len(automatons):
+            character_index += 1
+
+            if prev_str[character_index] != string[character_index] or character_index == len(string) or\
+                    character_index == len(automatons):
                 edits = automatons[character_index - 1]
                 break
-
-            character_index += 1
 
         else:
             edits = list(range(len(comparison_string) + 1))
@@ -50,6 +51,6 @@ def levenshtein_automaton(comparison_string: str, sorted_strings, threshold: int
             continue
 
         # Add the word to results with the minimum possible amount of edits
-        results[string] = min(edits)
+        results[original_string] = min(edits)
 
     return *sorted(results, key=results.get),

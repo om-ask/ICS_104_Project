@@ -1,11 +1,11 @@
-from mainInternal import RecordsTable, Inputs, StudentRecord, Codes, show_data, Menu
+from mainInternal import RecordsTable, Inputs, StudentRecord, Codes, show_data, Menu, valid_name_check, valid_gpa_check
 
 
 def add_record(student_records: RecordsTable):
     inputs = Inputs()
     inputs.add_prompt("Enter ID:", student_records.new_id_check)
-    inputs.add_prompt("Enter Name:", StudentRecord.valid_name_check)
-    inputs.add_prompt("Enter GPA:", StudentRecord.valid_gpa_check)
+    inputs.add_prompt("Enter Name:", valid_name_check)
+    inputs.add_prompt("Enter GPA:", valid_gpa_check)
 
     input_return = inputs.take_inputs()
 
@@ -18,6 +18,7 @@ def add_record(student_records: RecordsTable):
     student_records.add_record(new_record)
 
 
+# TODO Implement search here (hashem)
 def remove_record(student_records: RecordsTable):
     inputs = Inputs()
     inputs.add_prompt("Enter ID:", student_records.present_id_check)
@@ -27,7 +28,7 @@ def remove_record(student_records: RecordsTable):
     if input_return == Codes.BACK:
         return Codes.BACK
 
-    student_id = int(input_return[0])
+    student_id = int(input_return)
 
     record_to_remove = student_records.get_record(student_id=student_id)
     student_records.remove_record(record_to_remove)
@@ -36,7 +37,7 @@ def remove_record(student_records: RecordsTable):
 def modify_by_search(student_records: RecordsTable):
     inputs = Inputs()
     inputs.add_prompt("Search:", student_records.present_id_check, analyzer=student_records.search_analyzer)
-    inputs.add_prompt("Enter GPA:", StudentRecord.valid_gpa_check)
+    inputs.add_prompt("Enter GPA:", valid_gpa_check)
 
     return inputs.take_inputs()
 
@@ -44,7 +45,7 @@ def modify_by_search(student_records: RecordsTable):
 def modify_by_id(student_records: RecordsTable):
     inputs = Inputs()
     inputs.add_prompt("Enter ID:", student_records.present_id_check)
-    inputs.add_prompt("Enter GPA:", StudentRecord.valid_gpa_check)
+    inputs.add_prompt("Enter GPA:", valid_gpa_check)
 
     return inputs.take_inputs()
 
@@ -69,7 +70,7 @@ def modify_record_menu(student_records: RecordsTable):
 
 
 if __name__ == "__main__":
-    STUDENT_FILE_NAME = "students.txt"
+    STUDENT_FILE_NAME = "students2.txt"
     # Create student records and read from file
     records = RecordsTable()
     records.read_file(STUDENT_FILE_NAME)

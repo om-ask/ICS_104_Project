@@ -3,10 +3,8 @@ from searchInternal import levenshtein_automaton
 
 
 class Codes(Enum):
-    SUCCESS = 0
     INCONCLUSIVE = 1
     BACK = -1
-    NO_RETURN = 2
 
 
 class StudentRecord:
@@ -33,30 +31,10 @@ class StudentRecord:
         self._gpa = new_gpa
         self._raw["GPA"] = new_gpa
 
-    @staticmethod
-    def valid_gpa_check(response: str) -> tuple[bool, str]:
-        try:
-            student_gpa = float(response)
-
-        except ValueError:
-            return False, "The GPA should be a number between 0 and 4"
-
-        if 0 <= student_gpa <= 4:
-            return True, ""
-        else:
-            return False, "The GPA should be a number between 0 and 4"
-
-    @staticmethod
-    def valid_name_check(response: str) -> tuple[bool, str]:
-        if len(response.split()) >= 2:
-            return True, ""
-        else:
-            return False, "Please enter at least a first and second name."
-
 
 class RecordsTable:
 
-    def __init__(self, records_list=None):
+    def __init__(self, records_list=None, filename=None):
         self._ids: set[int] = set()
         self._names: set[str] = set()
         self._records: list[StudentRecord] = []
@@ -64,7 +42,12 @@ class RecordsTable:
         self._id_records: dict[int, StudentRecord] = {}
         self._name_records: dict[str, StudentRecord] = {}
         self._inverse_index: dict[str, list[tuple]] = {}
-        if records_list is not None:
+
+        if filename:
+            self.filename: str = filename
+            self.read_file(filename)
+
+        elif records_list:
             for record in records_list:
                 self.add_record(record)
 
@@ -109,6 +92,15 @@ class RecordsTable:
             if not token_list:
                 self._inverse_index.pop(name.lower())
 
+    def clear(self):
+        self._ids.clear()
+        self._names.clear()
+        self._records.clear()
+        self._raw_records.clear()
+        self._id_records.clear()
+        self._name_records.clear()
+        self._inverse_index.clear()
+
     def add_record(self, student_record: StudentRecord):
         self._ids.add(student_record.id())
         self._names.add(student_record.name())
@@ -139,7 +131,7 @@ class RecordsTable:
             possible_names = levenshtein_automaton(query, sorted(self._inverse_index.keys()), maximum_differences)
             name_results = {full_name: order
                             for name in possible_names
-                            for full_name, order in self._inverse_index[name]}
+                            for full_name, order in self._inverse_index[name.lower()]}
             sorted_names = *sorted(name_results, key=name_results.get),
 
         return RecordsTable([self.get_record(student_name=name) for name in sorted_names])
@@ -157,7 +149,10 @@ class RecordsTable:
 
                 line = file.readline().strip()
 
-    def update_file(self, filename: str):
+    def update_file(self, filename=None):
+        if not filename:
+            filename = self.filename
+
         with open(filename, "w") as file:
             for student_record in self._records:
                 file.write(f"{student_record.id()}, {student_record.name()}, {student_record.gpa()}\n")
@@ -223,25 +218,32 @@ class RecordsTable:
 class Menu:
 
     def __init__(self, back_option: str = "Back"):
-        self._back_option = back_option
-        self._prompts: list[str] = []
+        self._prompts: list[str] = [back_option]
         self._options: dict[int, ...] = {}
 
     def add_option(self, option_text: str, function=None, *args):
-        self._prompts.append(option_text)
-        option_number = len(self._prompts)
+        self._prompts.insert(-1, option_text)
+        option_number = len(self._prompts) - 1
 
         if function:
             self._options[option_number] = wrap_function(function, *args)
         else:
             self._options[option_number] = None
 
-    def valid_option(self, input_response: str, threshold: int) -> bool:
-        return NotImplemented  # TODO Implement this
+    def valid_option(self, input_response: str) -> int:
+        possible_options = levenshtein_automaton(input_response, sorted(self._prompts), 0)
+        if possible_options:
+            # Take the most possible option
+            option = possible_options[0]
+            option_number = self._prompts.index(option) + 1
+            return option_number
+
+        else:
+            return 0
 
     def display(self, pre='', post='', default_question_override='', final='') -> tuple:
         if not default_question_override:
-            default_question_override = "Enter a number to choose: "
+            default_question_override = "Enter a number to choose or type in part of the option: "
 
         if pre:
             print(pre)
@@ -249,34 +251,37 @@ class Menu:
         for option_number, prompt in enumerate(self._prompts, start=1):
             print(f"{option_number} {prompt}")
 
-        back_number = len(self._prompts) + 1
-        print(f"{back_number} {self._back_option}")
-
         if post:
             print(post)
 
+        back_number = len(self._prompts)
         choice_number = 0
-        while True:
+        while choice_number not in self._options:
             response = input(default_question_override).strip()
             if not response.isdigit():
-                print("Please enter a number only.")
-                continue
+                choice_number = self.valid_option(response.strip())
+                if choice_number == 0:
+                    print("Please type in a valid choice.")
+                    continue
 
-            choice_number = int(response)
+            else:
+                choice_number = int(response)
+
             if choice_number == back_number:
+                print(f"Chose Option {choice_number}: {self._prompts[choice_number - 1]}")
                 return choice_number, Codes.BACK
 
             if choice_number not in self._options:
                 print("Please enter a number that is present.")
-            else:
-                break
+
+        print(f"Chose Option {choice_number}: {self._prompts[choice_number - 1]}")
 
         if final:
             print(final)
 
         option = self._options[choice_number]
         if option is None:
-            return choice_number, Codes.SUCCESS
+            return choice_number, None
 
         return_value = option()
         if return_value == Codes.BACK:
@@ -337,10 +342,13 @@ class Inputs:
             else:
                 print(check_message)
 
-        return *results,
+        if len(results) > 1:
+            return tuple(results)
+        else:
+            return results[0]
 
 
-# TODO
+# TODO (hashem)
 #   Make this a general function so that we can print menus in an appealing format. The new general function should
 #   take a list of dictionaries where each dict is a ROW and each key in the the dict is a COLUMN
 #   Use the following to test:
@@ -358,7 +366,7 @@ class Inputs:
 #   | 202345771 | Mohammad Abdu    | 0.00 |
 #   _______________________________________
 
-def show_data(student_id_records: dict[int, dict[str, str or float]]) -> tuple:
+def show_data(student_id_records: dict[int, dict[str, str or float]]):
     print(student_id_records)
     return NotImplemented
     lines = []
@@ -382,8 +390,6 @@ def show_data(student_id_records: dict[int, dict[str, str or float]]) -> tuple:
     for line in lines:
         print(line)
 
-    return Codes.SUCCESS, Codes.NO_RETURN
-
 
 def wrap_function(function, *args):
     def wrapped_function(*args2):
@@ -392,8 +398,49 @@ def wrap_function(function, *args):
     return wrapped_function
 
 
-def search_ids(query: int):
-    return NotImplemented  # TODO Implement this
+def valid_name_check(response: str) -> tuple[bool, str]:
+    if len(response.split()) >= 2:
+        return True, ""
+    else:
+        return False, "Please enter at least a first and second name."
+
+
+def valid_gpa_check(response: str) -> tuple[bool, str]:
+    try:
+        student_gpa = float(response)
+
+    except ValueError:
+        return False, "The GPA should be a number between 0 and 4"
+
+    if 0 <= student_gpa <= 4:
+        return True, ""
+    else:
+        return False, "The GPA should be a number between 0 and 4"
+
+
+def valid_filename_check(response: str) -> tuple[bool, str]:
+    parts = response.split(".")
+    for part in parts:
+        if not part.isalnum():
+            return False, "Please enter only alphanumeric characters for the filename."
+
+    # if not response.endswith(".txt"):
+    #     return False, "File is not a .txt file"
+
+    return True, ''
+
+
+def create_file(filename):
+    try:
+        with open(filename, mode="w"):
+            pass
+    except IOError:
+        print(f"Could not create '{filename}'")
+        return Codes.BACK
+    else:
+        print(f"Successfully created file '{filename}'")
+        print()
+        return filename
 
 
 if __name__ == "__main__":
