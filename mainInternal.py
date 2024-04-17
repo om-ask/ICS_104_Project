@@ -366,29 +366,42 @@ class Inputs:
 #   | 202345771 | Mohammad Abdu    | 0.00 |
 #   _______________________________________
 
-def show_data(student_id_records: dict[int, dict[str, str or float]]):
+def show_data(student_id_records : list[dict]):
     print(student_id_records)
-    return NotImplemented
-    lines = []
+    # return NotImplemented
 
-    max_name_length = 0
-    for student_record in student_id_records:
-        name_length = len(student_id_records[student_record]["name"])
-        if name_length > max_name_length:
-            max_name_length = name_length
+    columns_title = []
+    max_len_column = {}
 
-    lines.append("_" * (max_name_length + 23))
-    lines.append(f"| ID        | Name{(max_name_length - 4) * ' '} | GPA  |")
-    lines.append("_" * (max_name_length + 23))
+    for title in student_id_records[0]:
+        columns_title.append(title)
+        max_len_column[title] = len(str(title))
+
     for student in student_id_records:
-        lines.append(
-            f"| {student:8d} | {student_id_records[student]['name']}"
-            f"{(max_name_length - len(student_id_records[student]['name'])) * ' '} |"
-            f" {student_id_records[student]['gpa']:4.2f} |")
-    lines.append("_" * (max_name_length + 23))
+        for data in columns_title:
+            if len(str(student[data])) > max_len_column[data]:
+                max_len_column[data] = len(str(student[data]))
 
-    for line in lines:
-        print(line)
+    max_line_length = 1 + sum(list(max_len_column.values())) + 3 * len(columns_title)
+
+    print(max_line_length * "_")
+
+    space = " "
+    for title in columns_title:
+        print(f"| {title}{space * ( max_len_column[title] - len(str(title)))} ", end = "")
+    print("|")
+
+    print(max_line_length * "_")
+
+    for student in student_id_records: #rows
+        for column in columns_title:
+            print(f"| {student[column]}{space * (max_len_column[column] - len(str(student[column])))} ", end="")
+        print("|")
+
+    print(max_line_length * "_")
+
+    print()
+
 
 
 def wrap_function(function, *args):
