@@ -3,6 +3,8 @@ from mainInternal import Codes, RecordsTable, Menu, show_data, Inputs, create_fi
 from searchFromRecords import search_menu
 from sortRecord import sort_menu
 
+from takeWhatYouWantFromMe import calculate_average
+
 # Define the default file to read from
 DEFAULT_STUDENT_FILE_NAME = "students.txt"
 
@@ -60,7 +62,7 @@ def main():
     main_menu.add_option("Search Records", search_menu, records)
     main_menu.add_option("Sort Records", sort_menu, records)
     main_menu.add_option("Top Performing Students")  # TODO Implement this (hashem) - Display the top 3 students
-    main_menu.add_option("Calculate Average")  # TODO Implement this (hashem) - Calculate the average of all the gpas
+    main_menu.add_option("Calculate Average", calculate_average, records)  # TODO Implement this (hashem) - Calculate the average of all the gpas
     main_menu.add_option("Save to Current File")  # TODO Implement this (hashem)- update file without exiting
     main_menu.add_option("Switch File")  # TODO Implement this (hashem) - clear current records and then read new file
     main_menu.add_option("Write to File")  # TODO Implement this (hashem) - Take a valid filename and write to it

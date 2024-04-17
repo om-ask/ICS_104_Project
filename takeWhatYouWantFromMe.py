@@ -1,7 +1,8 @@
 from mainInternal import StudentRecord, show_data, RecordsTable
 from sortRecord import sort_records
 
-def calculate_average(studens_records):
+def calculate_average(records):
+    studens_records = records.raw()
     gpas = []
 
     for student in studens_records:
@@ -9,6 +10,7 @@ def calculate_average(studens_records):
 
     average = sum(gpas) / len(gpas)
 
+    print("The average is :", average)
 
 
 
