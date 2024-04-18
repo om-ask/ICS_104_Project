@@ -1,4 +1,4 @@
-from mainInternal import RecordsTable, Inputs, StudentRecord, Codes, show_data, Menu, valid_name_check, valid_gpa_check
+from mainInternal import RecordsTable, Inputs, StudentRecord, show_data, Menu, valid_name_check, valid_gpa_check
 
 
 def add_record(student_records: RecordsTable):
@@ -8,10 +8,6 @@ def add_record(student_records: RecordsTable):
     inputs.add_prompt("Enter GPA:", valid_gpa_check)
 
     input_return = inputs.take_inputs()
-
-    if input_return == Codes.BACK:
-        return Codes.BACK
-
     student_id, student_name, student_gpa = int(input_return[0]), input_return[1], float(input_return[2])
 
     new_record = StudentRecord(student_id, student_name, student_gpa)
@@ -24,10 +20,6 @@ def remove_record(student_records: RecordsTable):
     inputs.add_prompt("Enter ID:", student_records.present_id_check)
 
     input_return = inputs.take_inputs()
-
-    if input_return == Codes.BACK:
-        return Codes.BACK
-
     student_id = int(input_return)
 
     record_to_remove = student_records.get_record(student_id=student_id)
@@ -57,12 +49,7 @@ def modify_record_menu(student_records: RecordsTable):
     modify_menu.add_option("By Searching For a Student", modify_by_search, student_records)
     modify_menu.add_option("By ID", modify_by_id, student_records)
 
-    menu_return = Codes.INCONCLUSIVE
-    while menu_return == Codes.INCONCLUSIVE:
-        response_number, menu_return = modify_menu.display()
-
-    if menu_return == Codes.BACK:
-        return Codes.BACK
+    response_number, menu_return = modify_menu.display()
 
     student_id, student_gpa = int(menu_return[0]), float(menu_return[1])
     record_to_modify = student_records.get_record(student_id=student_id)

@@ -1,10 +1,12 @@
-from enum import Enum
 from searchInternal import levenshtein_automaton
 
 
-class Codes(Enum):
-    INCONCLUSIVE = 1
-    BACK = -1
+class Back(BaseException):
+    pass
+
+
+class Inconclusive(BaseException):
+    pass
 
 
 class StudentRecord:
@@ -183,7 +185,7 @@ class RecordsTable:
 
         if not possible_records:
             print("No results")
-            return Codes.BACK
+            raise Back
 
         # Show data
         show_data(possible_records.raw())
@@ -194,11 +196,8 @@ class RecordsTable:
 
         choice_number, menu_return = search_menu.display()
 
-        if menu_return == Codes.BACK:
-            return Codes.BACK
-
         if choice_number == 2:
-            return Codes.BACK
+            raise Back
 
         else:
             return input("Enter ID: ")
@@ -262,15 +261,19 @@ class Menu:
         else:
             return 0
 
-    def display(self, pre='', post='', default_question_override='', final='') -> tuple:
+    def _display(self, pre='', post='', default_question_override='', final='') -> tuple:
         if not default_question_override:
             default_question_override = "Enter a number to choose or type in part of the option: "
 
         if pre:
             print(pre)
 
+        display_data = []
         for option_number, prompt in enumerate(self._prompts, start=1):
-            print(f"{option_number} {prompt}")
+            # print(f"{option_number} {prompt}")
+            display_data.append({"Number": option_number, "Option": prompt})
+
+        show_data(display_data)
 
         if post:
             print(post)
@@ -290,7 +293,7 @@ class Menu:
 
             if choice_number == back_number:
                 print(f"Chose Option {choice_number}: {self._prompts[choice_number - 1]}")
-                return choice_number, Codes.BACK
+                raise Back
 
             if choice_number not in self._options:
                 print("Please enter a number that is present.")
@@ -304,12 +307,22 @@ class Menu:
         if option is None:
             return choice_number, None
 
-        return_value = option()
-        if return_value == Codes.BACK:
-            return choice_number, Codes.INCONCLUSIVE
-
-        else:
+        try:
+            return_value = option()
             return choice_number, return_value
+
+        except Back:
+            raise Inconclusive
+
+    def display(self, pre='', post='', default_question_override='', final='', loop_until_back=False):
+        while True:
+            try:
+                menu_return = self._display(pre, post, default_question_override, final)
+                if not loop_until_back:
+                    return menu_return
+
+            except Inconclusive:
+                continue
 
 
 class Inputs:
@@ -333,7 +346,7 @@ class Inputs:
             response = input(prompt)
 
             if response.lower() == "cancel" or (current_prompt_index == 0 and response.lower() == "back"):
-                return Codes.BACK
+                raise Back
 
             elif response.lower() == "back":
                 current_prompt_index -= 1
@@ -341,8 +354,9 @@ class Inputs:
 
             input_analyzer, input_check = self._inputs[prompt]
             if input_analyzer:
-                analyzed_response = input_analyzer(response)
-                if analyzed_response == Codes.BACK:
+                try:
+                    analyzed_response = input_analyzer(response)
+                except Back:
                     continue
 
             else:
@@ -468,7 +482,7 @@ def create_file(filename):
             pass
     except IOError:
         print(f"Could not create '{filename}'")
-        return Codes.BACK
+        raise Back
     else:
         print(f"Successfully created file '{filename}'")
         print()

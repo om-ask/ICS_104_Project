@@ -1,4 +1,4 @@
-from mainInternal import show_data, Codes, RecordsTable, Menu, StudentRecord
+from mainInternal import show_data, RecordsTable, Menu, StudentRecord
 
 
 # TODO Sort by name (hashem)
@@ -7,12 +7,7 @@ def sort_menu(student_records: RecordsTable):
     sort_type_menu.add_option("Sort by ID", sort_records, student_records, "id")
     sort_type_menu.add_option("Sort by GPA", sort_records, student_records, "gpa")
 
-    menu_return = Codes.INCONCLUSIVE
-    while menu_return == Codes.INCONCLUSIVE:
-        choice_number, menu_return = sort_type_menu.display(pre="Choose sort type:", final="\n" * 2)
-
-    if menu_return == Codes.BACK:
-        return Codes.BACK
+    sort_type_menu.display(pre="Choose sort type:", final="\n" * 2)
 
 
 def sort_records(student_records: RecordsTable, sort_type="gpa"):
@@ -21,10 +16,8 @@ def sort_records(student_records: RecordsTable, sort_type="gpa"):
     sort_order_menu.add_option("Descending")
 
     choice_number, menu_return = sort_order_menu.display(pre="Choose sort order:", final="\n" * 2)
-    if menu_return == Codes.BACK:
-        return Codes.BACK
 
-    elif choice_number == 1:
+    if choice_number == 1:
         descending = False
 
     else:

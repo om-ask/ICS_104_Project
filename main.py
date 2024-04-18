@@ -1,5 +1,5 @@
 from editRecords import add_record, remove_record, modify_record_menu
-from mainInternal import Codes, RecordsTable, Menu, show_data, Inputs, create_file, valid_filename_check
+from mainInternal import RecordsTable, Menu, show_data, Inputs, create_file, valid_filename_check, Back
 from searchFromRecords import search_menu
 from sortRecord import sort_menu
 
@@ -32,9 +32,11 @@ def main():
             file_creation_menu.add_option(f"Create File '{filename}'", create_file, filename)
             file_creation_menu.add_option("Set New Filename", new_file_name_input.take_inputs)
 
-            return_value = Codes.INCONCLUSIVE
-            while return_value == Codes.INCONCLUSIVE:
+            try:
                 choice_number, return_value = file_creation_menu.display(pre="Do you want to?")
+            except Back:
+                print("Exiting Program Prematurely")
+                return
 
         except IndexError:
             print(f"ERROR: '{filename}' File format is incorrect")
@@ -46,12 +48,7 @@ def main():
             print()
             return_value = new_file_name_input.take_inputs()
 
-        if return_value == Codes.BACK:
-            print("Exiting Program Prematurely")
-            return
-
-        else:
-            filename = return_value
+        filename = return_value
 
     # Create main menu
     main_menu = Menu(back_option="Save and Exit")
@@ -62,16 +59,18 @@ def main():
     main_menu.add_option("Search Records", search_menu, records)
     main_menu.add_option("Sort Records", sort_menu, records)
     main_menu.add_option("Top Performing Students")  # TODO Implement this (hashem) - Display the top 3 students
-    main_menu.add_option("Calculate Average", calculate_average, records)  # TODO Implement this (hashem) - Calculate the average of all the gpas
+    main_menu.add_option("Calculate Average", calculate_average,
+                         records)  # TODO Implement this (hashem) - Calculate the average of all the gpas
     main_menu.add_option("Save to Current File")  # TODO Implement this (hashem)- update file without exiting
     main_menu.add_option("Switch File")  # TODO Implement this (hashem) - clear current records and then read new file
     main_menu.add_option("Write to File")  # TODO Implement this (hashem) - Take a valid filename and write to it
     main_menu.add_option("Merge Files")  # TODO Implement this (thenextyay)- merge 2 student files
 
     # Loop and display main menu until a BACK code is received
-    menu_return = None
-    while menu_return != Codes.BACK:
-        choice_number, menu_return = main_menu.display(pre="Choose:", final="\n" * 2)
+    try:
+        main_menu.display(pre="Choose:", final="\n" * 2, loop_until_back=True)
+    except Back:
+        pass
 
     # After exiting the main menu, update the current student file
     while True:
@@ -83,14 +82,12 @@ def main():
 
         except IOError:
             print(f"ERROR: Could not write to '{filename}'")
-            return_value = new_file_name_input.take_inputs()
+            try:
+                filename = new_file_name_input.take_inputs()
 
-        if return_value == Codes.BACK:
-            print("Exiting program without saving.")
-            return
-
-        else:
-            filename = return_value
+            except Back:
+                print("Exiting program without saving.")
+                return
 
     print("Program Closed")
 
