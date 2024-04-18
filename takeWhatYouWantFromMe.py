@@ -2,16 +2,18 @@ from mainInternal import StudentRecord, show_data, RecordsTable
 from sortRecord import sort_records
 
 def calculate_average(records):
-    studens_records = records.raw()
-    gpas = []
+    try:
+        studens_records = records.raw()
+        gpas = []
 
-    for student in studens_records:
-        gpas.append(student["GPA"])
+        for student in studens_records:
+            gpas.append(student["GPA"])
 
-    average = sum(gpas) / len(gpas)
+        average = sum(gpas) / len(gpas)
 
-    print("The average is :", average)
-
+        print("The average is :", average)
+    except ZeroDivisionError:
+        print("There is no data to calculate the average.")
 
 
 def top_performing_students(studens_records):
