@@ -54,18 +54,27 @@ class RecordsTable:
                 self.add_record(record)
 
     def records(self) -> list[StudentRecord]:
+        """Returns a list of students (StudentRecord)
+        """
         return self._records
 
     def names(self) -> set[str]:
+        """Returns a set of all student names
+        """
         return self._names
 
     def ids(self) -> set[int]:
+        """Returns a set of all student ids
+        """
         return self._ids
 
     def raw(self) -> list[dict[str, ...]]:
+        """Returns"""
         return self._raw_records
 
     def get_record(self, student_id=None, student_name=None) -> StudentRecord:
+        """Given an id or a name, returns a student. If not found then a KeyError is raised
+        """
         try:
             if student_id is not None:
                 return self._id_records[student_id]
@@ -95,6 +104,8 @@ class RecordsTable:
                 self._inverse_index.pop(name.lower())
 
     def clear(self):
+        """Clears and deletes all students
+        """
         self._ids.clear()
         self._names.clear()
         self._records.clear()
@@ -104,6 +115,8 @@ class RecordsTable:
         self._inverse_index.clear()
 
     def add_record(self, student_record: StudentRecord):
+        """Add a student (StudentRecord)
+        """
         self._ids.add(student_record.id())
         self._names.add(student_record.name())
         self._records.append(student_record)
@@ -113,6 +126,8 @@ class RecordsTable:
         self._add_to_inverse_index(student_record.name())
 
     def remove_record(self, student_record: StudentRecord):
+        """Remove a student (StudentRecord)
+        """
         self._ids.remove(student_record.id())
         self._names.remove(student_record.name())
         self._records.remove(student_record)
@@ -122,6 +137,8 @@ class RecordsTable:
         self._remove_from_inverse_index(student_record.name())
 
     def search_record(self, query: str):
+        """Returns a new RecordsTable with all the students that match the search
+        """
         query = query.strip()
         query_names = query.split()
         maximum_differences = len(query) // 3
@@ -139,6 +156,8 @@ class RecordsTable:
         return RecordsTable([self.get_record(student_name=name) for name in sorted_names])
 
     def read_file(self, filename: str):
+        """Reads the file given if found
+        """
         with open(filename, "r") as file:
             line = file.readline().strip()
 
@@ -152,6 +171,8 @@ class RecordsTable:
                 line = file.readline().strip()
 
     def update_file(self, filename=None):
+        """Updates the file if given, otherwise updates the file given when making the object for the first time
+        """
         if not filename:
             filename = self.filename
 
@@ -362,9 +383,8 @@ class Inputs:
             return results[0]
 
 
-# TODO (hashem)
 #   Make this a general function so that we can print menus in an appealing format. The new general function should
-#   take a list of dictionaries where each dict is a ROW and each key in the the dict is a COLUMN
+#   take a list of dictionaries where each dict is a ROW and each key in the dict is a COLUMN
 #   Use the following to test:
 #   >records = [
 #   {'id': 123456789, 'name': 'mohammed khalifa', 'gpa': 2.25},
@@ -385,13 +405,9 @@ def show_data(data: list[dict[str, ...]]):
     columns_max_width = {}
 
     # Get the column titles for the data to display
-    try:
-        for title in data[0]:
-            column_titles.append(title)
-            columns_max_width[title] = len(title)
-    except IndexError:
-        print("There is no data to show\n")
-        return
+    for title in data[0]:
+        column_titles.append(title)
+        columns_max_width[title] = len(title)
 
     # Get the maximum width of each column in the data
     for row in data:
@@ -419,7 +435,6 @@ def show_data(data: list[dict[str, ...]]):
     # Close the table
     print(row_boundary)
     print()
-
 
 
 def wrap_function(function, *args):
