@@ -1,5 +1,5 @@
 from editRecords import add_record, remove_record, modify_record_menu
-from mainInternal import RecordsTable, Menu, show_data, Inputs, create_file, valid_filename_check, Back
+from mainInternal import RecordsTable, show_data, Inputs, create_file, valid_filename_check, menu, Back
 from searchFromRecords import search_menu
 from sortRecord import sort_menu
 
@@ -28,15 +28,19 @@ def main():
             print(f"ERROR: Could not find file '{filename}'")
             print()
 
-            file_creation_menu = Menu()
-            file_creation_menu.add_option(f"Create File '{filename}'", create_file, filename)
-            file_creation_menu.add_option("Set New Filename", new_file_name_input.take_inputs)
+            print("Do you want to?")
+            choice_number = menu([f"Create File '{filename}'", "Set New Filename"])
+            print("\n")
 
-            try:
-                choice_number, return_value = file_creation_menu.display(pre="Do you want to?")
-            except Back:
+            if choice_number == 0:  # Back
                 print("Exiting Program Prematurely")
                 return
+
+            elif choice_number == 1:  # Option Create File
+                return_value = create_file(filename)
+
+            else:  # Option Set New Filename
+                return_value = new_file_name_input.take_inputs()
 
         except IndexError:
             print(f"ERROR: '{filename}' File format is incorrect")
@@ -48,29 +52,76 @@ def main():
             print()
             return_value = new_file_name_input.take_inputs()
 
+        if not return_value:  # Means the user went back and cancelled giving input
+            print("Exiting Program Prematurely")
+            return
+
         filename = return_value
 
-    # Create main menu
-    main_menu = Menu(back_option="Save and Exit")
-    main_menu.add_option("View Records", show_data, records.raw())
-    main_menu.add_option("Add Record", add_record, records)
-    main_menu.add_option("Remove Record", remove_record, records)
-    main_menu.add_option("Modify Record", modify_record_menu, records)
-    main_menu.add_option("Search Records", search_menu, records)
-    main_menu.add_option("Sort Records", sort_menu, records)
-    main_menu.add_option("Top Performing Students")  # TODO Implement this (hashem) - Display the top 3 students
-    main_menu.add_option("Calculate Average", calculate_average,
-                         records)  # TODO Implement this (hashem) - Calculate the average of all the gpas
-    main_menu.add_option("Save to Current File")  # TODO Implement this (hashem)- update file without exiting
-    main_menu.add_option("Switch File")  # TODO Implement this (hashem) - clear current records and then read new file
-    main_menu.add_option("Write to File")  # TODO Implement this (hashem) - Take a valid filename and write to it
-    main_menu.add_option("Merge Files")  # TODO Implement this (thenextyay)- merge 2 student files
+    # Define the menu options
+    menu_options = ["View Records",
+                    "Add Record",
+                    "Remove Record",
+                    "Modify Record",
+                    "Search Records",
+                    "Sort Records",
+                    "Top Performing Students",  # TODO Implement this (hashem) - Display the top 3 students
+                    "Calculate Average",  # TODO Implement this (hashem) - Calculate the average of all the gpas
+                    "Save to Current File",  # TODO Implement this (hashem)- update file without exiting
+                    "Switch File",  # TODO Implement this (hashem) - clear current records and then read new file
+                    "Write to File",  # TODO Implement this (hashem) - Take a valid filename and write to it
+                    "Merge Files"]  # TODO Implement this (thenextyay)- merge 2 student files
 
-    # Loop and display main menu until a BACK code is received
-    try:
-        main_menu.display(pre="Choose:", final="\n" * 2, loop_until_back=True)
-    except Back:
-        pass
+    # Loop and display a menu while responding to user input
+    while True:
+        print("Choose: ")
+
+        try:
+            option_number = menu(options=menu_options, back_option="Save and Exit")
+
+        except Back:
+            break
+
+        print("\n\n")
+        try:
+            if option_number == 1:  # Option View Records
+                show_data(records.raw())
+
+            elif option_number == 2:  # Option Add Record
+                add_record(records)
+
+            elif option_number == 3:  # Option Remove Record
+                remove_record(records)
+
+            elif option_number == 4:  # Option Modify Record
+                modify_record_menu(records)
+
+            elif option_number == 5:  # Option Search Record
+                search_menu(records)
+
+            elif option_number == 6:  # Option Sort Records
+                sort_menu(records)
+
+            elif option_number == 7:  # Option Top Performing
+                print("Not Implemented")
+
+            elif option_number == 8:  # Option Average
+                calculate_average(records)
+
+            elif option_number == 9:  # Option Save to Current File
+                print("Not Implemented")
+
+            elif option_number == 10:  # Option Switch File
+                print("Not Implemented")
+
+            elif option_number == 11:  # Option Write to File
+                print("Not Implemented")
+
+            elif option_number == 12:  # Option Merge Files
+                print("Not Implemented")
+
+        except Back:  # If any of these options go back, ignore it and continue loop
+            pass
 
     # After exiting the main menu, update the current student file
     while True:
@@ -82,10 +133,9 @@ def main():
 
         except IOError:
             print(f"ERROR: Could not write to '{filename}'")
-            try:
-                filename = new_file_name_input.take_inputs()
+            filename = new_file_name_input.take_inputs()
 
-            except Back:
+            if not filename:
                 print("Exiting program without saving.")
                 return
 

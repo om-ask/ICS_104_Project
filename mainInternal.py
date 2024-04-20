@@ -5,10 +5,6 @@ class Back(BaseException):
     pass
 
 
-class Inconclusive(BaseException):
-    pass
-
-
 class StudentRecord:
 
     def __init__(self, student_id: int, student_name: str, student_gpa: float):
@@ -183,23 +179,16 @@ class RecordsTable:
     def search_analyzer(self, response: str):
         possible_records = self.search_record(response)
 
-        if not possible_records:
+        if not possible_records.records():
             print("No results")
             raise Back
 
         # Show data
         show_data(possible_records.raw())
 
-        search_menu = Menu()
-        search_menu.add_option("Choose")
-        search_menu.add_option("Search Again")
+        choice_number = menu(["Choose"], back_option="Search Again")
 
-        choice_number, menu_return = search_menu.display()
-
-        if choice_number == 2:
-            raise Back
-
-        else:
+        if choice_number == 1:  # Option Choose
             return input("Enter ID: ")
 
     def present_id_check(self, response: str) -> tuple[bool, str]:
@@ -233,96 +222,6 @@ class RecordsTable:
 
         else:
             return False, "the ID is already there"
-
-
-class Menu:
-
-    def __init__(self, back_option: str = "Back"):
-        self._prompts: list[str] = [back_option]
-        self._options: dict[int, ...] = {}
-
-    def add_option(self, option_text: str, function=None, *args):
-        self._prompts.insert(-1, option_text)
-        option_number = len(self._prompts) - 1
-
-        if function:
-            self._options[option_number] = wrap_function(function, *args)
-        else:
-            self._options[option_number] = None
-
-    def valid_option(self, input_response: str) -> int:
-        possible_options = levenshtein_automaton(input_response, sorted(self._prompts), 0)
-        if possible_options:
-            # Take the most possible option
-            option = possible_options[0]
-            option_number = self._prompts.index(option) + 1
-            return option_number
-
-        else:
-            return 0
-
-    def _display(self, pre='', post='', default_question_override='', final='') -> tuple:
-        if not default_question_override:
-            default_question_override = "Enter a number to choose or type in part of the option: "
-
-        if pre:
-            print(pre)
-
-        display_data = []
-        for option_number, prompt in enumerate(self._prompts, start=1):
-            # print(f"{option_number} {prompt}")
-            display_data.append({"Number": option_number, "Option": prompt})
-
-        show_data(display_data)
-
-        if post:
-            print(post)
-
-        back_number = len(self._prompts)
-        choice_number = 0
-        while choice_number not in self._options:
-            response = input(default_question_override).strip()
-            if not response.isdigit():
-                choice_number = self.valid_option(response.strip())
-                if choice_number == 0:
-                    print("Please type in a valid choice.")
-                    continue
-
-            else:
-                choice_number = int(response)
-
-            if choice_number == back_number:
-                print(f"Chose Option {choice_number}: {self._prompts[choice_number - 1]}")
-                raise Back
-
-            if choice_number not in self._options:
-                print("Please enter a number that is present.")
-
-        print(f"Chose Option {choice_number}: {self._prompts[choice_number - 1]}")
-
-        if final:
-            print(final)
-
-        option = self._options[choice_number]
-        if option is None:
-            return choice_number, None
-
-        try:
-            return_value = option()
-            return choice_number, return_value
-
-        except Back:
-            raise Inconclusive
-
-    def display(self, pre='', post='', default_question_override='', final='', loop_until_back=False):
-        while True:
-            try:
-                menu_return = self._display(pre, post, default_question_override, final)
-                if not loop_until_back:
-                    return menu_return
-
-            except Inconclusive:
-                continue
 
 
 class Inputs:
@@ -386,7 +285,8 @@ class Inputs:
 def menu(options: list[str], back_option: str = "Back",
          prompt="Enter a number to choose or type in part of the option: ") -> int:
     """Displays the options given and prompts the user.
-    Return an integer indicating the option selected starting from 0 where 0 means back
+    Return an integer indicating the option selected starting from 1
+    Raise Back (error) if the user chooses the back option
     """
     # Prepare the options as a table to be shown using view_data()
     display_data = []
@@ -395,7 +295,7 @@ def menu(options: list[str], back_option: str = "Back",
 
     # Add the back option
     display_data.append({"Number": 0, "Option": back_option})
-    options.insert(0, back_option)
+    options = [back_option] + options
 
     # Display the data
     show_data(display_data)
@@ -407,7 +307,11 @@ def menu(options: list[str], back_option: str = "Back",
         if response.isdigit():
             # If the response is a number, check if the option number is present
             choice_number = int(response)
-            if 0 <= choice_number <= len(options):
+            if choice_number == 0:  # If the user chooses back
+                print("Chose Option", back_option)
+                raise Back
+
+            elif 0 < choice_number < len(options):
                 print(f"Chose Option {choice_number}: {options[choice_number]}")
                 return choice_number
 
@@ -422,8 +326,13 @@ def menu(options: list[str], back_option: str = "Back",
                 option = possible_options[0]
                 choice_number = options.index(option)
 
-                print(f"Chose Option {choice_number}: {option}")
-                return choice_number
+                if choice_number == 0:  # If the user chooses back
+                    print("Chose Option", back_option)
+                    raise Back
+
+                else:
+                    print(f"Chose Option {choice_number}: {option}")
+                    return choice_number
 
             else:
                 print("Please type in a valid choice.")
@@ -481,13 +390,6 @@ def show_data(data: list[dict[str, ...]]):
     # Close the table
     print(row_boundary)
     print()
-
-
-def wrap_function(function, *args):
-    def wrapped_function(*args2):
-        return function(*args, *args2)
-
-    return wrapped_function
 
 
 def valid_name_check(response: str) -> tuple[bool, str]:

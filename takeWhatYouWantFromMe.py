@@ -1,5 +1,5 @@
 from mainInternal import StudentRecord, show_data, RecordsTable
-from sortRecord import sort_records
+
 
 def calculate_average(records):
     try:
@@ -17,9 +17,9 @@ def calculate_average(records):
 
 
 def top_performing_students(studens_records):
-    sorted_student_records:list
-    #هنا ابغا زي اللي في sortRecord الlist اللي دخلت في الshow_data
-    #ما عرفت استخدم اشياءك اللي حاطها
+    sorted_student_records: list
+    # هنا ابغا زي اللي في sortRecord الlist اللي دخلت في الshow_data
+    # ما عرفت استخدم اشياءك اللي حاطها
 
     counter = 0
 
@@ -39,6 +39,7 @@ def top_performing_students(studens_records):
         counter += 1
 
     show_data(top_students)
+
 
 if __name__ == "__main__":
     pass

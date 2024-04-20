@@ -1,36 +1,40 @@
-from mainInternal import show_data, RecordsTable, Menu, StudentRecord
+from mainInternal import show_data, RecordsTable, StudentRecord, menu, Back
 
 
 # TODO Sort by name (hashem)
 def sort_menu(student_records: RecordsTable):
-    sort_type_menu = Menu()
-    sort_type_menu.add_option("Sort by ID", sort_records, student_records, "id")
-    sort_type_menu.add_option("Sort by GPA", sort_records, student_records, "gpa")
+    while True:
+        print("Choose Sort Type:")
+        sort_type_number = menu(["Sort by ID", "Sort by GPA"])
+        print("\n\n")
 
-    sort_type_menu.display(pre="Choose sort type:", final="\n" * 2)
+        try:
+            print("Choose Sort Order:")
+            sort_order_number = menu(["Ascending", "Descending"])
+            print("\n\n")
 
+        except Back:
+            continue  # Retry menu selection
 
-def sort_records(student_records: RecordsTable, sort_type="gpa"):
-    sort_order_menu = Menu()
-    sort_order_menu.add_option("Ascending")
-    sort_order_menu.add_option("Descending")
+        if sort_order_number == 1:  # Option Ascending
+            descending = False
 
-    choice_number, menu_return = sort_order_menu.display(pre="Choose sort order:", final="\n" * 2)
+        else:  # Option Descending
+            descending = True
 
-    if choice_number == 1:
-        descending = False
+        # Sort
+        if sort_type_number == 1:  # Sort by ID
+            # noinspection PyTypeChecker
+            sorted_student_records = sorted(student_records.records(), key=StudentRecord.id, reverse=descending)
 
-    else:
-        descending = True
+        else:
+            # noinspection PyTypeChecker
+            sorted_student_records = sorted(student_records.records(), key=StudentRecord.gpa, reverse=descending)
 
-    if sort_type == "id":
-        sorted_student_records = sorted(student_records.records(), key=StudentRecord.id, reverse=descending)
-
-    else:
-        sorted_student_records = sorted(student_records.records(), key=StudentRecord.gpa, reverse=descending)
-
-    sorted_record_table = RecordsTable(sorted_student_records)
-    show_data(sorted_record_table.raw())
+        # Display the sorted results
+        sorted_record_table = RecordsTable(sorted_student_records)
+        show_data(sorted_record_table.raw())
+        return  # Exit
 
 
 if __name__ == "__main__":
@@ -41,5 +45,3 @@ if __name__ == "__main__":
 
     show_data(records.raw())
     sort_menu(records)
-
-

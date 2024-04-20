@@ -1,12 +1,16 @@
-from mainInternal import show_data, RecordsTable, Menu, Inputs
+from mainInternal import show_data, RecordsTable, Inputs, menu
 
 
 def search_menu(record_table: RecordsTable):
-    search_type_menu = Menu()
-    search_type_menu.add_option("Search by Name", search_by_name, record_table)
-    search_type_menu.add_option("Search by ID", search_by_id, record_table)
+    print("Choose Search Type:")
+    choice_number = menu(["Search by Name", "Search by ID"])
+    print("\n\n")
 
-    search_type_menu.display(pre="Choose search type:", final="\n" * 2)
+    if choice_number == 1:  # Option Search by Name
+        search_by_name(record_table)
+
+    else:  # Option Search by ID
+        search_by_id(record_table)
 
 
 def search_by_name(record_table: RecordsTable):
