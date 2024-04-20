@@ -383,6 +383,52 @@ class Inputs:
             return results[0]
 
 
+def menu(options: list[str], back_option: str = "Back",
+         prompt="Enter a number to choose or type in part of the option: ") -> int:
+    """Displays the options given and prompts the user.
+    Return an integer indicating the option selected starting from 0 where 0 means back
+    """
+    # Prepare the options as a table to be shown using view_data()
+    display_data = []
+    for option_number, option in enumerate(options, start=1):
+        display_data.append({"Number": option_number, "Option": option})
+
+    # Add the back option
+    display_data.append({"Number": 0, "Option": back_option})
+    options.insert(0, back_option)
+
+    # Display the data
+    show_data(display_data)
+
+    # Loop until a valid option is chosen
+    while True:
+        # Take a response from the user
+        response = input(prompt).strip()
+        if response.isdigit():
+            # If the response is a number, check if the option number is present
+            choice_number = int(response)
+            if 0 <= choice_number <= len(options):
+                print(f"Chose Option {choice_number}: {options[choice_number]}")
+                return choice_number
+
+            else:
+                print("Please enter a number that is present.")
+
+        else:
+            # If the response is not a number, search for it within the options
+            possible_options = levenshtein_automaton(response, sorted(options), 0)
+            if possible_options:
+                # Take the most possible option
+                option = possible_options[0]
+                choice_number = options.index(option)
+
+                print(f"Chose Option {choice_number}: {option}")
+                return choice_number
+
+            else:
+                print("Please type in a valid choice.")
+
+
 #   Make this a general function so that we can print menus in an appealing format. The new general function should
 #   take a list of dictionaries where each dict is a ROW and each key in the dict is a COLUMN
 #   Use the following to test:
@@ -490,6 +536,5 @@ def create_file(filename):
 
 
 if __name__ == "__main__":
-    test_menu = Menu()
-    test_menu.add_option("Haha")
-    test_menu.add_option("gogo")
+    a = test_menu = menu(["Haha", "gogo"])
+    print("o", a)
