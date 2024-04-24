@@ -10,7 +10,7 @@ def search_menu(record_table: RecordsTable):
         # Prompt the user to choose a search type
         print("Choose Search Type:")
         choice_number = menu(["Search by Name", "Search by ID"])
-        print("\n\n")
+        print("\n")
 
         try:
             # Run each search type

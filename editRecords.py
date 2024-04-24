@@ -84,7 +84,7 @@ def modify_record_menu(student_records: RecordsTable):
         # Get the StudentRecord from the records table using the id the user provided
         record_to_modify = student_records.get_record(student_id=student_id)
 
-        # Modify to StudentRecord's GPA to the new value the user provied
+        # Modify to StudentRecord's GPA to the new value the user provided
         record_to_modify.modify_gpa(student_gpa)
 
         # Exit

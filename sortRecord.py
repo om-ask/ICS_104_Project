@@ -11,13 +11,13 @@ def sort_menu(student_records: RecordsTable):
         # Prompt the user for a sort type
         print("Choose Sort Type:")
         sort_type_number = menu(["Sort by ID", "Sort by GPA"])
-        print("\n\n")
+        print("\n")
 
         try:
             # Prompt the user for a sort order
             print("Choose Sort Order:")
             sort_order_number = menu(["Ascending", "Descending"])
-            print("\n\n")
+            print("\n")
 
         except Back:
             # If the user goings back here, return to the first menu

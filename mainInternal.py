@@ -173,7 +173,7 @@ class RecordsTable:
     def remove_record(self, student_record: StudentRecord):
         """Remove a student (StudentRecord)
         """
-        # Remove from each private containere
+        # Remove from each private containers
         self._ids.remove(student_record.id())
         self._names.remove(student_record.name())
         self._records.remove(student_record)
@@ -302,7 +302,7 @@ class Inputs:
     def take_inputs(self):
         print("Type 'cancel' to stop taking input or 'back' to undo.")
 
-        results = [''] * len(self._prompts)
+        results = [None] * len(self._prompts)
 
         current_prompt_index = 0
         while current_prompt_index < len(self._prompts):
@@ -491,9 +491,6 @@ def valid_filename_check(response: str) -> tuple[bool, str]:
     for part in parts:
         if not part.isalnum():
             return False, "Please enter only alphanumeric characters for the filename."
-
-    # if not response.endswith(".txt"):
-    #     return False, "File is not a .txt file"
 
     return True, ''
 

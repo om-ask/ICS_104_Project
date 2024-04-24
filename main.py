@@ -48,7 +48,7 @@ def main():
         except Back:
             break  # If the user goes back, exit the main menu loop
 
-        print("\n\n")
+        print("\n")
         # Run the function the user chose from the menu, while ignoring if the option goes back
         try:
             if selected_option == 1:  # Option View Records
