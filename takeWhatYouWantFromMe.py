@@ -1,17 +1,17 @@
-from mainInternal import StudentRecord, show_data, RecordsTable
+from mainInternal import show_data, RecordsTable
 
 
-def calculate_average(records):
+def calculate_average(student_records: RecordsTable):
     try:
-        studens_records = records.raw()
-        gpas = []
+        gpa_sum = 0
+        for student in student_records.records():
+            print(student.name())
+            gpa_sum += student.gpa()
 
-        for student in studens_records:
-            gpas.append(student["GPA"])
-
-        average = sum(gpas) / len(gpas)
+        average = gpa_sum / len(student_records.records())
 
         print("The average is :", average)
+
     except ZeroDivisionError:
         print("There is no data to calculate the average.")
 

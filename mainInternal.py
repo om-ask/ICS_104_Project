@@ -515,7 +515,7 @@ def create_file(filename):
         print()
 
 
-def read_file_into_record(filename: str, records: RecordsTable):
+def read_file_into_record(records: RecordsTable, filename: str = ""):
     """Reads file contents and updates records with the data in it. If the file could not be opened or something wrong
     happens, prompts the user with options.
     Supports going back
@@ -523,6 +523,10 @@ def read_file_into_record(filename: str, records: RecordsTable):
     # Define an input for taking in filenames from the user in case the current file cannot be opened for any reason
     new_file_name_input = Inputs()
     new_file_name_input.add_prompt("Enter a new filename: ", valid_filename_check)
+
+    # Take a filename if no filename was provided
+    if not filename:
+        filename = new_file_name_input.take_inputs()
 
     # Read from file until successful while handling any errors
     while True:

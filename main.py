@@ -1,6 +1,7 @@
 from editRecords import add_record, remove_record, modify_record_menu
 from mainInternal import RecordsTable, show_data, menu, Back, \
     read_file_into_record, update_file_from_record
+from mergeFile import merge_records
 from searchFromRecords import search_menu
 from sortRecord import sort_menu
 from takeWhatYouWantFromMe import calculate_average
@@ -17,7 +18,7 @@ def main():
 
     # Attempt to read from the default file
     try:
-        read_file_into_record(DEFAULT_STUDENT_FILE_NAME, records)
+        read_file_into_record(records, DEFAULT_STUDENT_FILE_NAME)
 
     except Back:
         # If the user goes back, continue the program without reading from the file
@@ -32,11 +33,11 @@ def main():
                     "Search Records",
                     "Sort Records",
                     "Top Performing Students",  # TODO Implement this (hashem) - Display the top 3 students
-                    "Calculate Average",  # TODO Implement this (hashem) - Calculate the average of all the GPAs
+                    "Calculate Average",
                     "Save to Current File",  # TODO Implement this (hashem)- update file without exiting
                     "Switch File",  # TODO Implement this (hashem) - clear current records and then read new file
                     "Write to File",  # TODO Implement this (hashem) - Take a valid filename and write to it
-                    "Merge Files"]  # TODO Implement this (thenextyay)- merge 2 student files
+                    "Merge Files"]
 
     # Loop and display the main menu while responding to user input
     while True:
@@ -85,7 +86,7 @@ def main():
                 print("Not Implemented")
 
             elif selected_option == 12:  # Option Merge Files
-                print("Not Implemented")
+                merge_records(records)
 
         except Back:  # If any of these options go back, ignore it and continue loop
             pass
