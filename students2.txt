@@ -1,4 +1,4 @@
-123456789, mohammed khalifa, 2.25
+123456789, mohammed khalifa, 2.0
 202312340, khalid ahmed, 3.7
 202345770, Hashim Khalifa, 3.0
 202350730, Omar Almutairi, 1.0
