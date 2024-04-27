@@ -290,33 +290,46 @@ class RecordsTable:
 
 
 class Inputs:
-
+    """Class that eases input taking with undo and validation functionality
+    """
     def __init__(self):
         self._prompts = []
         self._inputs = {}
 
     def add_prompt(self, prompt_text: str, check, analyzer=None):
+        """Add an input prompt with a validation functon "check"
+        Add a search_analyzer to analyzer if search capability is desired
+        """
         self._inputs[prompt_text] = (analyzer, check)
         self._prompts.append(prompt_text)
 
     def take_inputs(self) -> ...:
+        """Take inputs from user according to the prompts added and return them.
+        """
         print("Type 'cancel' to stop taking input or 'back' to undo.")
 
+        # Initialize the results array
         results = [None] * len(self._prompts)
 
+        # Loop until all prompts are asked and are responded to
         current_prompt_index = 0
         while current_prompt_index < len(self._prompts):
+            # Ask prompt
             prompt = self._prompts[current_prompt_index]
             response = input(prompt)
 
+            # If the user cancels or goes back from the first question, exit with a Back
             if response.lower() == "cancel" or (current_prompt_index == 0 and response.lower() == "back"):
                 raise Back
 
+            # If the user goes back, go to the prev question (Undo)
             elif response.lower() == "back":
                 current_prompt_index -= 1
                 continue
 
             input_analyzer, input_check = self._inputs[prompt]
+
+            # If any search functionality
             if input_analyzer:
                 try:
                     analyzed_response = input_analyzer(response)
@@ -327,23 +340,27 @@ class Inputs:
                 analyzed_response = response
 
             if input_check is None:
-                results.pop(current_prompt_index)
-                results.insert(current_prompt_index, analyzed_response)
+                # If no validation happens, add it to the results with validating
+                results[current_prompt_index] = analyzed_response
                 current_prompt_index += 1
                 continue
 
+            # If there are any validation checks, perform them
             check_success, check_message = input_check(analyzed_response)
             if check_success:
-                results.pop(current_prompt_index)
-                results.insert(current_prompt_index, analyzed_response)
+                # If successful validation happens, add it to the results
+                results[current_prompt_index] = analyzed_response
                 current_prompt_index += 1
 
             else:
+                # If validation fails, print the error (why the user response is invalid)
                 print(check_message)
 
         if len(results) > 1:
+            # If more than one input, return it as a tuple
             return tuple(results)
         else:
+            # If only one input, return it alone
             return results[0]
 
 
