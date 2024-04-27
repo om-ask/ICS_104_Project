@@ -1,13 +1,13 @@
 from editRecords import add_record, remove_record, modify_record_menu
 from mainInternal import RecordsTable, show_data, menu, Back, \
-    read_file_into_record, update_file_from_record
+    read_file_into_record, update_file_from_record, write_to_new_file, switch_file
 from mergeFile import merge_records
 from searchFromRecords import search_menu
 from sortRecord import sort_menu
 from takeWhatYouWantFromMe import calculate_average
 
 # Define the default file to read from
-DEFAULT_STUDENT_FILE_NAME = "students.txt"
+DEFAULT_STUDENT_FILE_NAME = "students2.txt"
 
 
 def main():
@@ -34,9 +34,9 @@ def main():
                     "Sort Records",
                     "Top Performing Students",  # TODO Implement this (hashem) - Display the top 3 students
                     "Calculate Average",
-                    "Save to Current File",  # TODO Implement this (hashem)- update file without exiting
-                    "Switch File",  # TODO Implement this (hashem) - clear current records and then read new file
-                    "Write to File",  # TODO Implement this (hashem) - Take a valid filename and write to it
+                    "Save to Current File",
+                    "Switch File",
+                    "Write to File",
                     "Merge Files"]
 
     # Loop and display the main menu while responding to user input
@@ -77,13 +77,13 @@ def main():
                 calculate_average(records)
 
             elif selected_option == 9:  # Option Save to Current File
-                print("Not Implemented")
+                update_file_from_record(records.filename, records)
 
             elif selected_option == 10:  # Option Switch File
-                print("Not Implemented")
+                switch_file(records)
 
             elif selected_option == 11:  # Option Write to File
-                print("Not Implemented")
+                write_to_new_file(records)
 
             elif selected_option == 12:  # Option Merge Files
                 merge_records(records)

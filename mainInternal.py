@@ -433,6 +433,10 @@ def show_data(data: list[dict[str, ...]]):
     column_titles = []
     columns_max_width = {}
 
+    if not data:
+        print("There is no data to show\n\n")
+        return
+
     # Get the column titles for the data to display
     for title in data[0]:
         column_titles.append(title)
@@ -595,6 +599,21 @@ def update_file_from_record(filename, records: RecordsTable):
             print(f"ERROR: Could not write to '{filename}'")
             filename = new_file_name_input.take_inputs()
 
+
+def write_to_new_file(records: RecordsTable):
+    inputs = Inputs()
+    inputs.add_prompt("Enter the new file name:", valid_filename_check)
+
+    file_name = inputs.take_inputs()
+    update_file_from_record(file_name, records)
+
+def switch_file(records: RecordsTable):
+    records.clear()
+    inputs = Inputs()
+    inputs.add_prompt("Enter the new file name:", valid_filename_check)
+
+    file_name = inputs.take_inputs()
+    read_file_into_record(records, file_name)
 
 if __name__ == "__main__":
     a = test_menu = menu(["Haha", "gogo"])
