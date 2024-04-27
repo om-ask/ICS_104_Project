@@ -10,7 +10,7 @@ def sort_menu(student_records: RecordsTable):
     while True:
         # Prompt the user for a sort type
         print("Choose Sort Type:")
-        sort_type_number = menu(["Sort by ID", "Sort by GPA"])
+        sort_type_number = menu(["Sort by ID", "Sort by GPA", "Sort by Name"])
         print("\n")
 
         try:
@@ -35,9 +35,13 @@ def sort_menu(student_records: RecordsTable):
             # noinspection PyTypeChecker
             sorted_student_records = sorted(student_records.records(), key=StudentRecord.id, reverse=descending)
 
-        else:
+        elif sort_type_number == 2:
             # noinspection PyTypeChecker
             sorted_student_records = sorted(student_records.records(), key=StudentRecord.gpa, reverse=descending)
+
+        else:
+            # noinspection PyTypeChecker
+            sorted_student_records = sorted(student_records.records(), key=StudentRecord.name, reverse=descending)
 
         # Create a new records table with the sorted records
         sorted_record_table = RecordsTable(sorted_student_records)

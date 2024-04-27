@@ -4,7 +4,7 @@ from mainInternal import RecordsTable, show_data, menu, Back, \
 from mergeFile import merge_records
 from searchFromRecords import search_menu
 from sortRecord import sort_menu
-from takeWhatYouWantFromMe import calculate_average
+from takeWhatYouWantFromMe import calculate_average, top_performing_students
 
 # Define the default file to read from
 DEFAULT_STUDENT_FILE_NAME = "students2.txt"
@@ -32,7 +32,7 @@ def main():
                     "Modify Record",
                     "Search Records",
                     "Sort Records",
-                    "Top Performing Students",  # TODO Implement this (hashem) - Display the top 3 students
+                    "Top Performing Students",
                     "Calculate Average",
                     "Save to Current File",
                     "Switch File",
@@ -71,7 +71,7 @@ def main():
                 sort_menu(records)
 
             elif selected_option == 7:  # Option Top Performing
-                print("Not Implemented")
+                top_performing_students(records)
 
             elif selected_option == 8:  # Option Average
                 calculate_average(records)
