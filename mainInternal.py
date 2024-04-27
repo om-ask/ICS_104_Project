@@ -575,7 +575,7 @@ def read_file_into_record(records: RecordsTable, filename: str = ""):
             filename = new_file_name_input.take_inputs()
 
 
-def update_file_from_record(records: RecordsTable, filename):
+def update_file_from_record(records: RecordsTable, filename, overwrite=True):
     """Opens file and updates its data with the records. If the file could not be opened, prompts the user
     for a new file. If the file is present, checks if there is data to be read from the file. If so, warns the user
     that the file will be overwritten then prompts the user.
@@ -586,6 +586,28 @@ def update_file_from_record(records: RecordsTable, filename):
     new_file_name_input.add_prompt("Enter a new filename: ", valid_filename_check)
     # Attempt to update file until successful
     while True:
+        # Check if the file is present if overwrite mode is False
+        if not overwrite:
+            try:
+                # Attempt to open in read mode
+                with open(filename, "r"):
+                    pass
+                file_present = True
+
+            except FileNotFoundError:
+                file_present = False
+
+            if file_present:
+                print(f"The file {filename} is already present. Do you want to?")
+                overwrite_choice = menu(["Overwrite", "Enter a new filename"])
+                if overwrite_choice == 2:  # Enter a new filename
+                    # Take a new filename and then restart loop
+                    filename = new_file_name_input.take_inputs()
+                    continue
+
+                # Otherwise continue and attempt to overwrite
+                print(f"Attempting to overwrite {filename}")
+
         try:
             # Attempt updating
             records.update_file(filename)
@@ -605,7 +627,7 @@ def write_to_new_file(records: RecordsTable):
     inputs.add_prompt("Enter the new file name:", valid_filename_check)
 
     file_name = inputs.take_inputs()
-    update_file_from_record(records, file_name)
+    update_file_from_record(records, file_name, overwrite=False)
 
 
 def switch_file(records: RecordsTable):

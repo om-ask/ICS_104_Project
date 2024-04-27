@@ -29,7 +29,7 @@ def remove_record(student_records: RecordsTable):
     """Prompts the user for a student to delete from the given records table and removes it if found
     Supports going back
     """
-    # Loop until the user goes back or the modification is successful
+    # Loop until the user goes back or the remove is successful
     while True:
         # Show the records table so that the user can see the current student info
         show_data(student_records.raw())
