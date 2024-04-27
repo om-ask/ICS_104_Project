@@ -1,7 +1,6 @@
 from mainInternal import show_data, RecordsTable, StudentRecord, menu, Back
 
 
-# TODO Sort by name (hashem)
 def sort_menu(student_records: RecordsTable):
     """Prompts the user to select a sort type and order and then displays the results
     Supports going back
