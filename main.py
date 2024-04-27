@@ -21,9 +21,9 @@ def main():
         read_file_into_record(records, DEFAULT_STUDENT_FILE_NAME)
 
     except Back:
-        # If the user goes back, continue the program without reading from the file
-        print("No student records file was read from.")
-        pass
+        # If the user goes back, exit the program
+        print("Exiting program prematurely without doing anything")
+        return
 
     # Define the menu options
     menu_options = ["View Records",
@@ -32,7 +32,7 @@ def main():
                     "Modify Record",
                     "Search Records",
                     "Sort Records",
-                    "Top Performing Students",  # TODO Implement this (hashem) - Display the top 3 students
+                    "Top Performing Students",
                     "Calculate Average",
                     "Save to Current File",
                     "Switch File",
@@ -77,7 +77,7 @@ def main():
                 calculate_average(records)
 
             elif selected_option == 9:  # Option Save to Current File
-                update_file_from_record(records.filename, records)
+                update_file_from_record(records, records.filename)
 
             elif selected_option == 10:  # Option Switch File
                 switch_file(records)
@@ -88,12 +88,14 @@ def main():
             elif selected_option == 12:  # Option Merge Files
                 merge_records(records)
 
+            input("Press ENTER to continue")
+
         except Back:  # If any of these options go back, ignore it and continue loop
             pass
 
     # After exiting the main menu, update the current student file
     try:
-        update_file_from_record(records.filename, records)
+        update_file_from_record(records, records.filename)
 
     except Back:
         print("Exiting program without saving.")

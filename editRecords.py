@@ -25,23 +25,46 @@ def add_record(student_records: RecordsTable):
     student_records.add_record(new_record)
 
 
-# TODO Implement search here (hashem)
 def remove_record(student_records: RecordsTable):
     """Prompts the user for a student to delete from the given records table and removes it if found
     Supports going back
     """
-    # Define and input for taking a valid student id present in the records table
-    inputs = Inputs()
-    inputs.add_prompt("Enter ID:", student_records.present_id_check)
+    # Loop until the user goes back or the modification is successful
+    while True:
+        # Show the records table so that the user can see the current student info
+        show_data(student_records.raw())
 
-    # Take the input and change it into an integer
-    student_id = int(inputs.take_inputs())
+        # Allow the user to choose the method of choosing a student to remove
+        print("Choose a student to modify:")
+        choice_number = menu(["By Searching For a Student",
+                              "By ID"])
 
-    # Get the record from the records table
-    record_to_remove = student_records.get_record(student_id=student_id)
+        # Each method takes different input prompts
+        if choice_number == 1:  # Option Searching for Student
+            # Define an input for searching for a student to remove
+            inputs = Inputs()
+            inputs.add_prompt("Search:", student_records.present_id_check, analyzer=student_records.search_analyzer)
 
-    # Remove the record from the records table
-    student_records.remove_record(record_to_remove)
+        else:  # Option By ID:
+            # Define an input for taking a present student id
+            inputs = Inputs()
+            inputs.add_prompt("Enter ID:", student_records.present_id_check)
+
+        try:
+            # Take the input from the user and convert into an integer
+            student_id = int(inputs.take_inputs())
+        except Back:
+            # If the user goes back here, return to the choice menu at the beginning
+            continue  # Retry
+
+        # Get the record from the records table
+        record_to_remove = student_records.get_record(student_id=student_id)
+
+        # Remove the record from the records table
+        student_records.remove_record(record_to_remove)
+
+        # Exit
+        return
 
 
 def modify_record_menu(student_records: RecordsTable):

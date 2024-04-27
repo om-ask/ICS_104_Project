@@ -299,7 +299,7 @@ class Inputs:
         self._inputs[prompt_text] = (analyzer, check)
         self._prompts.append(prompt_text)
 
-    def take_inputs(self):
+    def take_inputs(self) -> ...:
         print("Type 'cancel' to stop taking input or 'back' to undo.")
 
         results = [None] * len(self._prompts)
@@ -575,22 +575,22 @@ def read_file_into_record(records: RecordsTable, filename: str = ""):
             filename = new_file_name_input.take_inputs()
 
 
-def update_file_from_record(filename, records: RecordsTable):
+def update_file_from_record(records: RecordsTable, filename):
     """Opens file and updates its data with the records. If the file could not be opened, prompts the user
-    for a new file.
+    for a new file. If the file is present, checks if there is data to be read from the file. If so, warns the user
+    that the file will be overwritten then prompts the user.
     Supports going back
     """
     # Define an input for taking in filenames from the user in case the current file cannot be opened for any reason
     new_file_name_input = Inputs()
     new_file_name_input.add_prompt("Enter a new filename: ", valid_filename_check)
-
     # Attempt to update file until successful
     while True:
         try:
             # Attempt updating
             records.update_file(filename)
             # If successful then exit
-            print(f"Successfully updated file '{filename}'")
+            print(f"Successfully wrote to file '{filename}'")
             print()
             return
 
@@ -605,7 +605,8 @@ def write_to_new_file(records: RecordsTable):
     inputs.add_prompt("Enter the new file name:", valid_filename_check)
 
     file_name = inputs.take_inputs()
-    update_file_from_record(file_name, records)
+    update_file_from_record(records, file_name)
+
 
 def switch_file(records: RecordsTable):
     records.clear()
@@ -614,6 +615,7 @@ def switch_file(records: RecordsTable):
 
     file_name = inputs.take_inputs()
     read_file_into_record(records, file_name)
+
 
 if __name__ == "__main__":
     a = test_menu = menu(["Haha", "gogo"])
