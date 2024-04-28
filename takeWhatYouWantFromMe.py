@@ -7,7 +7,7 @@ def calculate_average(student_records: RecordsTable):
     try:
         gpa_sum = 0
 
-        # get the sum
+        # Get the sum
         for student in student_records.records():
             gpa_sum += student.gpa()
 
@@ -18,14 +18,14 @@ def calculate_average(student_records: RecordsTable):
         print("The average is: %.2f" % average)
 
     except ZeroDivisionError:
-        # if there is no records for any student
+        # If there is no records for any student
         print("There is no data to calculate the average.")
 
 
 def top_performing_students(records: RecordsTable):
     """Give the top 3 students
     """
-    # take the students sorted by gpa
+    # Take the students sorted by gpa
     sorted_student_records = sorted(records.records(), key=StudentRecord.gpa, reverse=True)
 
     counter = 0
@@ -33,7 +33,7 @@ def top_performing_students(records: RecordsTable):
     top_students = []
     top_gpas = []
 
-    # to take the first 3 students, and take more if necessary
+    # To take the first 3 students, and take more if necessary
     for student in sorted_student_records:
 
         if counter == 3:
@@ -46,7 +46,7 @@ def top_performing_students(records: RecordsTable):
         top_gpas.append(student.gpa())
         counter += 1
 
-    # display the top students
+    # Display the top students
     show_data(RecordsTable(top_students).raw())
 
 

@@ -87,8 +87,6 @@ def main():
 
             elif selected_option == 9:  # Option Save to Current File
                 print("Save to Current File")
-
-                # update the records in the file
                 update_file_from_record(records, records.filename)
 
             elif selected_option == 10:  # Option Switch File

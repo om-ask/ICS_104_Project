@@ -655,7 +655,7 @@ def write_to_new_file(records: RecordsTable):
     file_name = inputs.take_inputs()
 
     # update the new file_name with the records
-    update_file_from_record(records, file_name)
+    update_file_from_record(records, file_name, overwrite=False)
 
 
 def switch_file(records: RecordsTable):

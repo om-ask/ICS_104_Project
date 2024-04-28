@@ -25,6 +25,8 @@ def levenshtein_automaton(comparison_string: str, sorted_strings, threshold: int
     comparison string. It discards any strings that are less similar than a given threshold.
     The list of strings should be sorted for maximum speed.
     """
+    if not comparison_string or not sorted_strings:
+        return tuple()
     # Set the comparison string to lowercase if not case-sensitive
     comparison_string = comparison_string.lower() if not case_sensitive else comparison_string
 
