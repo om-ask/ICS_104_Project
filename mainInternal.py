@@ -648,21 +648,28 @@ def update_file_from_record(records: RecordsTable, filename, overwrite=True):
 
 
 def write_to_new_file(records: RecordsTable):
+    # take file_name from the user
     inputs = Inputs()
     inputs.add_prompt("Enter the new file name:", valid_filename_check)
 
     file_name = inputs.take_inputs()
-    update_file_from_record(records, file_name, overwrite=False)
+
+    # update the new file_name with the records
+    update_file_from_record(records, file_name)
 
 
 def switch_file(records: RecordsTable):
+    # clear the record
     records.clear()
+
+    # take file_name from the user
     inputs = Inputs()
     inputs.add_prompt("Enter the new file name:", valid_filename_check)
 
     file_name = inputs.take_inputs()
-    read_file_into_record(records, file_name)
 
+    # read the new file record
+    read_file_into_record(records, file_name)
 
 if __name__ == "__main__":
     a = test_menu = menu(["Haha", "gogo"])
