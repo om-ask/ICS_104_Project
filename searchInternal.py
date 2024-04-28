@@ -55,8 +55,8 @@ def levenshtein_automaton(comparison_string: str, sorted_strings, threshold: int
             character_index += 1
 
             # If the next character is not identical or the end of either string is reached, break out of loop
-            if prev_str[character_index] != string[character_index] or character_index == len(string) or\
-                    character_index == len(automatons):
+            if (character_index == len(automatons) or character_index == len(string)
+                    or prev_str[character_index] != string[character_index]):
                 # Set the current edits to the previous character
                 edits = automatons[character_index - 1]
                 break

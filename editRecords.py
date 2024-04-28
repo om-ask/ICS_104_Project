@@ -5,6 +5,7 @@ def add_record(student_records: RecordsTable):
     """Prompts the user for new student info and then adds it to the given records table
     Supports going back
     """
+    show_data(student_records.raw())
 
     # Define an input for taking student info
     inputs = Inputs()
@@ -23,6 +24,8 @@ def add_record(student_records: RecordsTable):
 
     # Add it to the records table
     student_records.add_record(new_record)
+
+    print("Successfully added student.")
 
 
 def remove_record(student_records: RecordsTable):

@@ -41,6 +41,7 @@ def main():
 
     # Loop and display the main menu while responding to user input
     while True:
+        print("CURRENT FILE:", records.filename)
         print("Choose: ")
 
         try:  # Display the menu
@@ -53,39 +54,51 @@ def main():
         # Run the function the user chose from the menu, while ignoring if the option goes back
         try:
             if selected_option == 1:  # Option View Records
+                print("Viewing Records")
                 show_data(records.raw())
 
             elif selected_option == 2:  # Option Add Record
+                print("Adding Record")
                 add_record(records)
 
             elif selected_option == 3:  # Option Remove Record
+                print("Removing Record")
                 remove_record(records)
 
             elif selected_option == 4:  # Option Modify Record
+                print("Modifying Record")
                 modify_record_menu(records)
 
             elif selected_option == 5:  # Option Search Record
+                print("Searching Records")
                 search_menu(records)
 
             elif selected_option == 6:  # Option Sort Records
+                print("Sorting Records")
                 sort_menu(records)
 
             elif selected_option == 7:  # Option Top Performing
+                print("Display Top Students")
                 top_performing_students(records)
 
             elif selected_option == 8:  # Option Average
+                print("Calculate Average")
                 calculate_average(records)
 
             elif selected_option == 9:  # Option Save to Current File
+                print("Save to Current File")
                 update_file_from_record(records, records.filename)
 
             elif selected_option == 10:  # Option Switch File
+                print("Switch File")
                 switch_file(records)
 
             elif selected_option == 11:  # Option Write to File
+                print("Write to File")
                 write_to_new_file(records)
 
             elif selected_option == 12:  # Option Merge Files
+                print("Merge Records")
                 merge_records(records)
 
             input("Press ENTER to continue")

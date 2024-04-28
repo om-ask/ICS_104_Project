@@ -241,6 +241,8 @@ class RecordsTable:
                 # ID, Name, GPA
                 file.write(f"{student_record.id()}, {student_record.name()}, {student_record.gpa()}\n")
 
+    # THE FOLLOWING ARE METHODS TO BE USED AS CHECK FOR THE INPUTS CLASS
+
     def search_analyzer(self, response: str):
         possible_records = self.search_record(response)
 
@@ -261,32 +263,38 @@ class RecordsTable:
             student_id = int(response)
 
         except ValueError:
-            return False, "the ID should be 9 integer numbers"
+            return False, "The ID should be 9 integer numbers."
 
         if len(response) != 9:
-            return False, "the ID should be 9 integer numbers"
+            return False, "The ID should be 9 integer numbers."
+
+        if len(response.lstrip('0')) != 9:
+            return False, "The ID should not start with any zeroes."
 
         if student_id in self._ids:
             return True, ""
 
         else:
-            return False, "the ID is not there"
+            return False, "The ID is not there."
 
     def new_id_check(self, response: str) -> tuple[bool, str]:
         try:
             student_id = int(response)
 
         except ValueError:
-            return False, "the ID should be 9 integer numbers"
+            return False, "The ID should be 9 integer numbers."
 
         if len(response) != 9:
-            return False, "the ID should be 9 integer numbers"
+            return False, "The ID should be 9 integer numbers."
+
+        if len(response.lstrip('0')) != 9:
+            return False, "The ID should not start with any zeroes."
 
         if student_id not in self._ids:
             return True, ""
 
         else:
-            return False, "the ID is already there"
+            return False, "The ID is already there."
 
 
 class Inputs:
@@ -499,12 +507,12 @@ def valid_gpa_check(response: str) -> tuple[bool, str]:
         student_gpa = float(response)
 
     except ValueError:
-        return False, "The GPA should be a number between 0 and 4"
+        return False, "The GPA should be a number between 0 and 4."
 
     if 0 <= student_gpa <= 4:
         return True, ""
     else:
-        return False, "The GPA should be a number between 0 and 4"
+        return False, "The GPA should be a number between 0 and 4."
 
 
 def valid_filename_check(response: str) -> tuple[bool, str]:
